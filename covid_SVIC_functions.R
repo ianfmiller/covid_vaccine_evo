@@ -1,0 +1,72 @@
+### convenience functions for analysis
+
+## functions for setting b1 according to assumed ES virulence, dr, and gamma
+
+get.matricies<-function(output) #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
+{
+  Fmat<<-matrix(output[1,8:16],3,3,byrow = T)
+  Vmat<<-matrix(output[1,17:25],3,3,byrow = T)
+}
+
+getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
+{
+  values<-eigen(Fmat %*% solve(Vmat))$values
+  R0<<-0
+  for(i in 1:length(values))
+  {
+    if(Im(values)[i]==0) {R0<<-max(R0,Re(values)[i])}
+  }
+  R0
+}
+
+get.states<-function(p.C, p.I, p.vacc)
+{
+  S_0=1-p.vacc-p.I-p.C #susceptible
+  V_0=p.vacc #vaccinated
+  I_n_0=p.I #infected--naive--resdient strain
+  I_v_0=0 #infected--vaccinated--resdient strain
+  I_c_0=0 #infected--convalescent--resident strain
+  C_0=p.C #convalescent
+  
+  states<<-c(S=S_0,
+            V=V_0,
+            I_n=I_n_0,
+            I_v=I_v_0,
+            I_c=I_c_0,
+            C=C_0)
+}
+
+
+find.R0<-function(v,b1,b2) # get R0 given vr, b1, b2
+{
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+  new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
+                 dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+  get.matricies(new.out)
+  R0.calc<-getR0(Fmat,Vmat)
+  R0.calc
+}
+
+R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr, b1, b2
+{
+  R0.assumed-find.R0(vr,b1,b2)
+}
+
+b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and optim vir given b1,b2
+{
+  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
+}
+
+plot.s<-function(plot.mat,cols,col.vals)
+{
+  plot(0,0,type="n",xlim=c(-.025,1.025),ylim=c(-0.025,1.025),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,.05)
+  yy<-seq(0,1,.05)
+  for(i in 1:21)
+  {
+    for(j in 1:21)
+    {
+      rect(xx[i]-.025,yy[j]-.025,xx[i]+.025,yy[j]+.025,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
+    }
+  }
+}
