@@ -11,9 +11,7 @@ dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
 gamma<-1
 
-optim.vir.assumed<-.005 #set to either .001, .002, .0005
-color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.001, 2 -> optim.vir.assumed=.002, 3 -> optim.vir.assumed=.0005
-
+optim.vir.assumed<-.0025 #set to either .01, .005, .0025
 
 vir.obs<-.005
 
@@ -27,17 +25,17 @@ rLn<-0 #convalescent class
 frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
 
 
-### set trade-off (b1 + b2) according to assumed ES virulence and R0
+### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
 
 ## set trade-off shape (b2 only) according to assumed ES virulence
 
-get.states(0,0,0)
+#get.states(0,0,0)
 
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
+#b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 
-## set trade-off scaling (b1) according to assumed R0
+## set trade-off scaling (b1) so that R0=2.5 at vir.obs
 
-b1<-uniroot(R0.search,c(0,100),vr=optim.vir.assumed,b2=b2,tol=1e-10)$root
+#b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 ## checks for setting b1 and b2
 
@@ -46,15 +44,17 @@ b1<-uniroot(R0.search,c(0,100),vr=optim.vir.assumed,b2=b2,tol=1e-10)$root
 #uniroot(b2.search,c(0,1),b1=2,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
 #uniroot(b2.search,c(0,1),b1=3,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
 
-#check to ensure that b1 and b2 give desired R0
-#find.R0(optim.vir.assumed,b1,b2)
+#check to ensure that b1 and b2 give desired R0 at vir.obs
+#find.R0(vir.obs,b1,b2)
 
-#check that optim.vir.assumed is in fact optimal given b1 and b2 and gives desired R0
+#check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
 
 #vs<-seq(0,.01,.00001)
 #rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
-#plot(vs,rs,ylim=c(R0.assumed-.0001,R0.assumed+.0001),xlab=expression(alpha),ylab=expression(R[0]))
+#plot(vs,rs,ylim=c(2.495,2.505),xlab=expression(alpha),ylab=expression(R[0]))
 #abline(v=optim.vir.assumed)
+#abline(h=max(rs))
+#abline(v=vir.obs)
 #abline(h=R0.assumed)
 
 
@@ -100,7 +100,7 @@ rLn<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=optim.vir.assumed,b2=b2,tol=1e-10)$root
+b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 rUn<-rUn.fix
 rLn<-rLn.fix
@@ -229,7 +229,7 @@ rLn<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=optim.vir.assumed,b2=b2,tol=1e-10)$root
+b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 rUn<-rUn.fix
 rLn<-rLn.fix
@@ -354,7 +354,7 @@ rLn<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=optim.vir.assumed,b2=b2,tol=1e-10)$root
+b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 rUn<-rUn.fix
 rLn<-rLn.fix
