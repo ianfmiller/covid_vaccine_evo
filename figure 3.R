@@ -121,7 +121,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -155,7 +155,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -188,7 +188,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -250,7 +250,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -283,7 +283,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -314,7 +314,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -375,7 +375,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -409,7 +409,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
@@ -441,7 +441,7 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=.01)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
       get.matricies(out2)
