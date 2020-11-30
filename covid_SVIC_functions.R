@@ -19,7 +19,7 @@ getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
   R0
 }
 
-get.states<-function(p.C, p.I, p.vacc)
+get.states<-function(p.C, p.I, p.vacc) #set initial conditions
 {
   S_0=1-p.vacc-p.I-p.C #susceptible
   V_0=p.vacc #vaccinated
@@ -52,12 +52,32 @@ R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr,
   R0.assumed-find.R0(vr,b1,b2)
 }
 
-b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and optim vir given b1,b2
+b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
 {
   optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
 }
 
-plot.s<-function(plot.mat,cols,col.vals)
+find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
+{
+  rU<-rU
+  rL<-rL
+  rUn<-rUn
+  rLn<-rLn
+  
+  R0s<-c()
+  for(v in vsteps)
+  {
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+    new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
+                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+    get.matricies(new.out)
+    R0.calc<-getR0(Fmat,Vmat)
+    R0s<-c(R0s,R0.calc)
+  }
+  list(vsteps[which.max(R0s)],R0s)
+}
+
+plot.s<-function(plot.mat,cols,col.vals) #plotting function
 {
   plot(0,0,type="n",xlim=c(-.025,1.025),ylim=c(-0.025,1.025),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
   xx<-seq(0,1,.05)
