@@ -209,10 +209,7 @@ rLn<-rLn.fix
   par(mar=c(2,1,2,5))
   yy<-seq(0,length(s.col.vals[[color.index]]),1)
   plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
-  for(i in 1:length(s.col.vals[[color.index]]))
-  {
-    rect(0,yy[i]-.5,1,yy[i]+.5,col=s.colors[[color.index]][i],border = NA)
-  }
+  color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
   axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
   mtext("selection",side=4,line =2)
 }
@@ -334,15 +331,12 @@ rLn<-rLn.fix
   par(mar=c(2,1,2,5))
   yy<-seq(0,length(s.col.vals[[color.index]]),1)
   plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
-  for(i in 1:length(s.col.vals[[color.index]]))
-  {
-    rect(0,yy[i]-.5,1,yy[i]+.5,col=s.colors[[color.index]][i],border = NA)
-  }
+  color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
   axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
   mtext("selection",side=4,line =2)
 }
 
-### optim vir = obs vir
+### optim vir < obs vir
 par(mar=c(2,2,2,2))
 optim.vir.assumed<-.0025 #set to either .005, .01, .0025
 color.index<-3 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
@@ -462,10 +456,7 @@ rLn<-rLn.fix
   par(mar=c(2,1,2,5))
   yy<-seq(0,length(s.col.vals[[color.index]]),1)
   plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
-  for(i in 1:length(s.col.vals[[color.index]]))
-  {
-    rect(0,yy[i]-.5,1,yy[i]+.5,col=s.colors[[color.index]][i],border = NA,density = NA)
-  }
+  color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
   axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
   mtext("selection",side=4,line =2)
 }
