@@ -4,8 +4,8 @@
 
 get.matricies<-function(output) #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
 {
-  Fmat<<-matrix(output[1,8:16],3,3,byrow = T)
-  Vmat<<-matrix(output[1,17:25],3,3,byrow = T)
+  Fmat<<-matrix(output[1,11:46],6,6,byrow = T)
+  Vmat<<-matrix(output[1,47:82],6,6,byrow = T)
 }
 
 getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
@@ -23,31 +23,37 @@ get.states<-function(p.C, p.I, p.vacc) #set initial conditions
 {
   S_0=1-p.vacc-p.I-p.C #susceptible
   V_0=p.vacc #vaccinated
-  I_n_0=p.I #infected--naive--resdient strain
-  I_v_0=0 #infected--vaccinated--resdient strain
-  I_c_0=0 #infected--convalescent--resident strain
+  I_pn_0=p.I #infected--presymptomatic--naive
+  I_pv_0=0 #infected--presymptomatic--vaccinated
+  I_pc_0=0 #infected--presymptomatic--convalescent
+  I_sn_0=p.I #infected--symptomatic--naive
+  I_sv_0=0 #infected--symptomatic--vaccinated
+  I_sc_0=0 #infected--symptomatic--convalescent
   C_0=p.C #convalescent
   
   states<<-c(S=S_0,
             V=V_0,
-            I_n=I_n_0,
-            I_v=I_v_0,
-            I_c=I_c_0,
+            I_pn=I_pn_0,
+            I_pv=I_pv_0,
+            I_pc=I_pc_0,
+            I_sn=I_sn_0,
+            I_sv=I_sv_0,
+            I_sc=I_sc_0,
             C=C_0)
 }
 
 
 find.R0<-function(v,b1,b2) # get R0 given vr, b1, b2
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,sigma=sigma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,x=x)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                 dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+                 dllname = "SVIC", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
   get.matricies(new.out)
   R0.calc<-getR0(Fmat,Vmat)
   R0.calc
 }
 
-R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr, b1, b2
+R0.search<-function(vr,b1,b2) # get difference between assumed R0 and R0 given vr, b1, b2
 {
   R0.assumed-find.R0(vr,b1,b2)
 }
@@ -57,19 +63,19 @@ b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim v
   optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
 }
 
-find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
+find.optim.vir<-function(vsteps,b1,b2,rUv,rLv,rUc,rLc) # get optim vir given b1, b2
 {
-  rU<-rU
-  rL<-rL
-  rUn<-rUn
-  rLn<-rLn
+  rUv<-rUv
+  rLv<-rLv
+  rUc<-rUc
+  rLc<-rLc
   
   R0s<-c()
   for(v in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,sigma=sigma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,x=x)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+                   dllname = "SVIC", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
     get.matricies(new.out)
     R0.calc<-getR0(Fmat,Vmat)
     R0s<-c(R0s,R0.calc)
