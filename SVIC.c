@@ -24,7 +24,7 @@ return result;
 /* initializer */
 void initmod(void (* odeparms)(int *, double *))
 {
-  int N=9;
+  int N=11;
   odeparms(&N, parms);
 }
 
