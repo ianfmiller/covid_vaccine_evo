@@ -9,7 +9,9 @@ dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
 #### define model parameters
 
-gamma<-1
+gamma<-1/7
+
+sigma<-1/4
 
 optim.vir.assumed<-.0025 #set to either .01, .005, .0025
 
@@ -17,13 +19,14 @@ vir.obs<-.005
 
 R0.assumed<-2.5
 
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUv<-.0 #vaccinated class
+rLv<-0 #vaccinated class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
 
+x<-100
 
 ### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
 
@@ -82,8 +85,8 @@ s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
 #### analysis
 
-rUn.fix<-.5 #convalescent class
-rLn.fix<-.75 #convalescent class
+rUc.fix<-.5 #convalescent class
+rLc.fix<-.75 #convalescent class
 
 layout(matrix(c(1,1,2,2,3,3,4,5,5,6,6,7,7,8,9,9,10,10,11,11,12),3,7,byrow = T))
 par(mar=c(2,2,2,2),oma=c(4,8,4,0))
@@ -93,10 +96,10 @@ par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 optim.vir.assumed<-.01 #set to either .005, .01, .0025
 color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUv<-.0 #vaccinated class
+rLv<-0 #vaccinated class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
