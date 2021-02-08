@@ -1,17 +1,18 @@
 /* file sirmodess.c */
 #include <R.h>
 #include <math.h>
-static double parms[9];
+static double parms[11];
 #define b1 parms[0]
 #define b2 parms[1]
 #define gamma parms[2]
-#define rU parms[3]
-#define rL parms[4]
-#define rUn parms[5]
-#define rLn parms[6]
-#define frac_lower parms[7]
-#define v parms[8]
-
+#define sigma parms[3]
+#define rUv parms[4]
+#define rLv parms[5]
+#define rUc parms[6]
+#define rLc parms[7]
+#define frac_lower parms[8]
+#define v parms[9]
+#define x parms[10]
 
 
 double betafunc (double virulence, double rU_effect, double rL_effect, double frac_lower_effect) {
@@ -31,58 +32,133 @@ void initmod(void (* odeparms)(int *, double *))
 void derivs (int *neq, double *t, double *y, double *ydot,double *yout, double *out, int *ip)
 {
 
+double foi; 
+foi = betafunc(v,0,0,frac_lower)*(0.5*y[2]+y[5]) + betafunc(v,rUv,rLv,frac_lower)*(0.5*y[3]+y[6]) + betafunc(v,rUc,rLc,frac_lower)*(0.5*y[4]+y[7]);
+
 /* susceptible */
   
-ydot[0] = -y[0] * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower));
+ydot[0] = -y[0] * foi;
 
 /* vaccinated */
   
-ydot[1] =  -y[1] * (1-rU) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower));
+ydot[1] =  -y[1] * (1-rUv) * foi;
 
-/* infected--naive */
+/* infected,pre-symptomatic--naive */
+
+ydot[2] = y[0] * foi - y[2]*sigma;
+
+/* infected,pre-symptomatic--vaccinated */
+
+ydot[3] = y[1] * (1-rUv) * foi - y[3]*sigma;
+
+/* infected,pre-symptomatic--natural immunity */
+
+ydot[4] = y[8] * (1-rUc) * foi - y[4]*sigma;
+
+/* infected,symptomatic--naive */
  
-ydot[2] = y[0] * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower)) - (gamma + v) * y[2];
+ydot[5] = y[2]*sigma - y[5] * (gamma + x*v);
 
-/* infected--vaccinated */
+/* infected,symptomatic--vaccinated */
   
-ydot[3] = y[1] * (1-rU) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower)) - (gamma + v*(1-rL)) * y[3];
+ydot[6] = y[3]*sigma - y[6] * (gamma + (1-rLv)*x*v);
 
-/* infected--natural immunity */
+/* infected,symptomatic--natural immunity */
 
-ydot[4] = y[5] * (1-rUn) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower)) - (gamma + v*(1-rLn)) * y[4];
+ydot[7] = y[4]*sigma - y[7] * (gamma + (1-rLc)*x*v);
 
 /* convalescent */
   
-ydot[5] = gamma * (y[2] + y[3] + y[4]) - y[5]* (1-rUn)*(y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUn,rLn,frac_lower));
+ydot[8] = gamma * (y[5] + y[6] + y[7]) - y[8]* (1-rUc) * foi ;
 
 
 /* output for Fmat */
-  
-yout[0] = y[0]*betafunc(v,0,0,frac_lower);
-yout[1] = y[0]*betafunc(v,rU,rL,frac_lower);
-yout[2] = y[0]*betafunc(v,rUn,rLn,frac_lower);
 
-yout[3] = y[1]*(1-rU)*betafunc(v,0,0,frac_lower);
-yout[4] = y[1]*(1-rU)*betafunc(v,rU,rL,frac_lower);
-yout[5] = y[1]*(1-rU)*betafunc(v,rUn,rLn,frac_lower);
+yout[0] = y[0]*0.5*betafunc(v,0,0,frac_lower);
+yout[1] = y[0]*0.5*betafunc(v,rUv,rLv,frac_lower);
+yout[2] = y[0]*0.5*betafunc(v,rUc,rLc,frac_lower);
+yout[3] = y[0]*betafunc(v,0,0,frac_lower);
+yout[4] = y[0]*betafunc(v,rUv,rLv,frac_lower);
+yout[5] = y[0]*betafunc(v,rUc,rLc,frac_lower);
 
-yout[6] = y[5]*(1-rUn)*betafunc(v,0,0,frac_lower);
-yout[7] = y[5]*(1-rUn)*betafunc(v,rU,rL,frac_lower);
-yout[8] = y[5]*(1-rUn)*betafunc(v,rUn,rLn,frac_lower);
-  
+yout[6] = y[1]*(1-rUv)*0.5*betafunc(v,0,0,frac_lower);
+yout[7] = y[1]*(1-rUv)*0.5*betafunc(v,rUv,rLv,frac_lower);
+yout[8] = y[1]*(1-rUv)*0.5*betafunc(v,rUc,rLc,frac_lower);
+yout[9] = y[1]*(1-rUv)*betafunc(v,0,0,frac_lower);
+yout[10] = y[1]*(1-rUv)*betafunc(v,rUv,rLv,frac_lower);
+yout[11] = y[1]*(1-rUv)*betafunc(v,rUc,rLc,frac_lower);
+
+yout[12] = y[8]*(1-rUc)*0.5*betafunc(v,0,0,frac_lower);
+yout[13] = y[8]*(1-rUc)*0.5*betafunc(v,rUv,rLv,frac_lower);
+yout[14] = y[8]*(1-rUc)*0.5*betafunc(v,rUc,rLc,frac_lower);
+yout[15] = y[8]*(1-rUc)*betafunc(v,0,0,frac_lower);
+yout[16] = y[8]*(1-rUc)*betafunc(v,rUv,rLv,frac_lower);
+yout[17] = y[8]*(1-rUc)*betafunc(v,rUc,rLc,frac_lower);
+
+yout[18] = 0;
+yout[19] = 0;
+yout[20] = 0;
+yout[21] = 0;
+yout[22] = 0;
+yout[23] = 0;
+
+yout[24] = 0;
+yout[25] = 0;
+yout[26] = 0;
+yout[27] = 0;
+yout[28] = 0;
+yout[29] = 0;
+
+yout[30] = 0;
+yout[31] = 0;
+yout[32] = 0;
+yout[33] = 0;
+yout[34] = 0;
+yout[35] = 0;
+
  /* output for Vmat */
   
-yout[9] = gamma + v;
-yout[10] = 0;
-yout[11] = 0;
+yout[36] = sigma;
+yout[37] = 0;
+yout[38] = 0;
+yout[39] = 0;
+yout[40] = 0;
+yout[41] = 0;
 
-yout[12] = 0;
-yout[13] = gamma + v*(1-rL);
-yout[14] = 0;
+yout[42] = 0;
+yout[43] = sigma;
+yout[44] = 0;
+yout[45] = 0;
+yout[46] = 0;
+yout[47] = 0;
 
-yout[15] = 0;
-yout[16] = 0;
-yout[17] = gamma + v*(1-rLn);
+yout[48] = 0;
+yout[49] = 0;
+yout[50] = sigma;
+yout[51] = 0;
+yout[52] = 0;
+yout[53] = 0;
+
+yout[54] = -1*sigma;
+yout[55] = 0;
+yout[56] = 0;
+yout[57] = gamma + x*v;
+yout[58] = 0;
+yout[59] = 0;
+
+yout[60] = 0;
+yout[61] = -1*sigma;
+yout[62] = 0;
+yout[63] = 0;
+yout[64] = gamma+(1-rLv)*x*v;
+yout[65] = 0;
+
+yout[66] = 0;
+yout[67] = 0;
+yout[68] = -1*sigma;
+yout[69] = 0;
+yout[70] = 0;
+yout[71] = gamma + (1-rLc)*x*v;
  
 }
 
