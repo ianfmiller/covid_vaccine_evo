@@ -13,11 +13,11 @@ gamma<-1/7
 
 sigma<-1/4
 
-optim.vir.assumed<-.0025 #set to either .01, .005, .0025
+optim.vir.assumed<-.005*1.5 #set to either .01, .005, .0025
 
-vir.obs<-.005
+vir.obs<-.005*1.5
 
-R0.assumed<-2.5
+R0.assumed<-2.5*1.5
 
 rUv<-.0 #vaccinated class
 rLv<-0 #vaccinated class
@@ -32,33 +32,33 @@ x<-100
 
 ## set trade-off shape (b2 only) according to assumed ES virulence
 
-#get.states(0,0,0)
+get.states(0,0,0)
 
-#b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 
 ## set trade-off scaling (b1) so that R0=2.5 at vir.obs
 
-#b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
+b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 ## checks for setting b1 and b2
 
 #check to ensure that fit b2 is effectively independent of b1
-#uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=2,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=3,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
+uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
+uniroot(b2.search,c(0,1),b1=2,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
+uniroot(b2.search,c(0,1),b1=3,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
 
 #check to ensure that b1 and b2 give desired R0 at vir.obs
-#find.R0(vir.obs,b1,b2)
+find.R0(vir.obs,b1,b2)
 
 #check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
 
-#vs<-seq(0,.01,.00001)
-#rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
-#plot(vs,rs,ylim=c(2.495,2.505),xlab=expression(alpha),ylab=expression(R[0]))
-#abline(v=optim.vir.assumed)
-#abline(h=max(rs))
-#abline(v=vir.obs)
-#abline(h=R0.assumed)
+vs<-seq(0,.01,.00001)
+rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
+plot(vs,rs,ylim=c(3.7,10),xlab=expression(alpha),ylab=expression(R[0]))
+abline(v=optim.vir.assumed)
+abline(h=max(rs))
+abline(v=vir.obs)
+abline(h=R0.assumed)
 
 
 #### calculate selection coefficient for combinations of rL and rU
