@@ -73,17 +73,17 @@ yout[8] = y[5]*(1-rUn)*betafunc(v,rUn,rLn,frac_lower);
   
  /* output for Vmat */
   
-yout[9] = gamma + v;
+yout[9] = gamma + v*prop;
 yout[10] = 0;
 yout[11] = 0;
 
 yout[12] = 0;
-yout[13] = gamma + v*(1-rL);
+yout[13] = gamma + v*prop*(1-rL);
 yout[14] = 0;
 
 yout[15] = 0;
 yout[16] = 0;
-yout[17] = gamma + v*(1-rLn);
+yout[17] = gamma + v*prop*(1-rLn);
  
 }
 
