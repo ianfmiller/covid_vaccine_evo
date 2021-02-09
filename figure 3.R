@@ -68,19 +68,20 @@ b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 400))
 s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 400))
 s.colors1<-c(s.blues1,"white",s.reds1)
-s.col.vals1<-seq(-2.5e-2,2.5e-2,length.out = 801)
+s.col.vals1<-seq(-8e-1,8e-1,length.out = 801)
 
-s.blues2<-hsv(.666,1,1,seq(1,.05,length.out = 400))
-s.reds2<-hsv(1,1,1,seq(.1,1,length.out = 400))
+s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 400))
+s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 400))
 s.colors2<-c(s.blues2,"white",s.reds2)
-s.col.vals2<-seq(-7e-3,7e-3,length.out = 801)
+s.col.vals2<-seq(-4e-1,4e-1,length.out = 801)
 
 s.colors<-list(s.colors1,s.colors2)
 s.col.vals<-list(s.col.vals1,s.col.vals2)
 
+res<-21
+
 ### set plot window
 
-dev.new(width=5, height=4, unit="in")
 layout(matrix(c(1,1,2,2,3,3,4,5,5,6,6,7,7,8),2,7,byrow = T))
 par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
@@ -109,12 +110,13 @@ rLn<-rLn.fix
 # 10% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
-  
-  for (rUx in seq(0,1,.05))
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -128,10 +130,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -143,12 +148,14 @@ rLn<-rLn.fix
 # 20% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.2)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
   
-  for (rUx in seq(0,1,.05))
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -162,10 +169,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -176,12 +186,14 @@ rLn<-rLn.fix
 # 50% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.5)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
   
-  for (rUx in seq(0,1,.05))
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -195,10 +207,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -235,12 +250,14 @@ rLn<-rLn.fix
 # 10% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
   
-  for (rUx in seq(0,1,.05))
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -254,10 +271,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -267,12 +287,14 @@ rLn<-rLn.fix
 # 20% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.2)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
   
-  for (rUx in seq(0,1,.05))
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -286,10 +308,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -298,12 +323,14 @@ rLn<-rLn.fix
 # 50% vacc
 {
   get.states(p.C=.1,p.I=0,p.vacc=.5)
-  plot.mat.R0.obs<-matrix(NA,21,21) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,21,21) #build matricies to populate
+  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
+  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
+  R0.obs.vec<-c()
+  R0.mutant.vec<-c()
   
-  for (rUx in seq(0,1,.05))
+  for (rUx in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,.05))
+    for (rLx in seq(0,1,length.out = res))
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
@@ -317,10 +344,13 @@ rLn<-rLn.fix
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
-      plot.mat.R0.obs[rUx*20+1,rLx*20+1]<-R0.obs #populate matricies
-      plot.mat.R0.mutant[rUx*20+1,rLx*20+1]<-R0.mutant #populate matricies
+      R0.obs.vec<-c(R0.obs.vec,R0.obs)
+      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
     }
   }
+  
+  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
@@ -340,3 +370,4 @@ mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,li
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T)
 
 ## copy to clipboard with width of 1440, height of 850
+
