@@ -26,7 +26,7 @@ rLc<-0 #convalescent class
 
 frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
 
-x<-100
+x<-66.666
 
 ### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
 
