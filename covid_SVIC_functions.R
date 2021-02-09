@@ -79,14 +79,14 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b
 
 plot.s<-function(plot.mat,cols,col.vals) #plotting function
 {
-  plot(0,0,type="n",xlim=c(-.025,1.025),ylim=c(-0.025,1.025),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
-  xx<-seq(0,1,.05)
-  yy<-seq(0,1,.05)
-  for(i in 1:21)
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,length.out = res)
+  yy<-seq(0,1,length.out = res)
+  for(i in 1:res)
   {
-    for(j in 1:21)
+    for(j in 1:res)
     {
-      rect(xx[i]-.025,yy[j]-.025,xx[i]+.025,yy[j]+.025,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
+      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
     }
   }
 }
