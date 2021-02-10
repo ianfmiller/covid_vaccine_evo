@@ -10,7 +10,7 @@ dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
 #### define model parameters
 
-gamma<-1
+gamma<-1/7
 
 optim.vir.assumed<-.005*1.5 #set to either .01, .005, .0025
 
