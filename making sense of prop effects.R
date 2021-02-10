@@ -26,15 +26,15 @@ prop<-100
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-b1*x.cords^b2
-plot(x.cords,y.cords,type="l",col="black",xlim=c(0,.015),xlab="virulence",ylab="transmisson rate",main="transmission rate")
+plot(x.cords,y.cords,type="l",col="black",xlim=c(0,.02),xlab="virulence",ylab="transmisson rate",main="transmission rate")
 
 prop<-66.666
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-b1*x.cords^b2
 points(x.cords,y.cords,type="l",col="green")
 
@@ -42,22 +42,22 @@ prop<-10
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-b1*x.cords^b2
 points(x.cords,y.cords,type="l",col="red")
 
 prop<-100
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-1/(x.cords*prop+gamma)
 plot(x.cords,y.cords,type="l",col="black",xlab="virulence",ylab="transmisson time",main="transmission time")
 
 prop<-66.666
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-1/(x.cords*prop+gamma)
 points(x.cords,y.cords,type="l",col="green")
 
 prop<-10
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-1/(x.cords*prop+gamma)
 points(x.cords,y.cords,type="l",col="red")
 
@@ -65,7 +65,7 @@ prop<-100
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-sapply(x.cords,find.R0,b1=b1,b2=b2)
 plot(x.cords,y.cords,type="l",col="black",xlab="virulence",ylab="fitness",main="fitness")
 
@@ -73,7 +73,7 @@ prop<-66.666
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-sapply(x.cords,find.R0,b1=b1,b2=b2)
 points(x.cords,y.cords,type="l",col="green")
 
@@ -81,7 +81,7 @@ prop<-10
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-x.cords<-seq(0,.015,.0001)
+x.cords<-seq(0,.02,.0001)
 y.cords<-sapply(x.cords,find.R0,b1=b1,b2=b2)
 points(x.cords,y.cords,type="l",col="red")
 
