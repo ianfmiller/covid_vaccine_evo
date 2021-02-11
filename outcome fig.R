@@ -89,7 +89,7 @@ res<-21
 
 ### set plot window
 
-layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
+layout(matrix(c(1,1,2,2,3,3,10,10,4,4,5,5,6,6,10,10,7,7,8,8,9,9,10,10),3,8,byrow = T))
 par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
 #### analysis
@@ -462,8 +462,24 @@ rLn<-rLn.fix
 }
 
 #legend
-plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F)
-legend("center",legend=c(1,2,3,4,5),col=viridis(5),pch=16,cex=4,bty="n")
+plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F,xlim=c(0,1),ylim=c(0,1))
+par(oma=c(4,0,4,0),mar=c(5,0,4,0))
+legend("left",yjust=.5,
+       legend=c(
+        expression(' 1 > '*R[0](alpha[obs])*' > '*R[0](2*alpha[obs])),
+        expression(' 1 > '*R[0](2*alpha[obs])*' > '*R[0](alpha[obs])),
+        expression(' '*R[0](alpha[obs])*' > 1 & '*R[0](alpha[obs])*' > '*R[0](2*alpha[obs])),
+        expression(' '*R[0](2*alpha[obs])*' > 1 > '*R[0](alpha[obs])),
+        expression(' '*R[0](2*alpha[obs])*' > 1 & '*R[0](2*alpha[obs])*' > '*R[0](alpha[obs]))
+        ),
+      col=c(
+        viridis(4)[1],
+        viridis(4,alpha=.5)[1],
+        viridis(4)[2],
+        viridis(4)[3],
+        viridis(4)[4]
+        ),
+      pch=15,cex=1.25,pt.cex = 4,bty="n",y.intersp = 1.5)
 
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
