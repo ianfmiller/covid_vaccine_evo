@@ -22,7 +22,7 @@ rL<-0 #vaccinated class
 rUn<-0 #convalescent class
 rLn<-0 #convalescent class
 
-frac_lower<-.1 # % contribution of lower respiratory infection to overall transmission
+frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
 
 
 ### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
@@ -82,8 +82,8 @@ s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
 #### analysis
 
-rUn.fix<-.5 #convalescent class
-rLn.fix<-.75 #convalescent class
+rUn.fix<-.75 #convalescent class
+rLn.fix<-1 #convalescent class
 
 layout(matrix(c(1,1,2,2,3,3,4,5,5,6,6,7,7,8,9,9,10,10,11,11,12),3,7,byrow = T))
 par(mar=c(2,2,2,2),oma=c(4,8,4,0))
