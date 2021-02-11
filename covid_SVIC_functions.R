@@ -1,5 +1,7 @@
 ### convenience functions for analysis
 
+library(viridis)
+
 ## functions for setting b1 according to assumed ES virulence, dr, and gamma
 
 get.matricies<-function(output) #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
