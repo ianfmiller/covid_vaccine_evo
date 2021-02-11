@@ -54,7 +54,7 @@ R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr,
 
 b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
 {
-  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
+  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0.0025,1),maximum = T,tol=1e-10)$maximum
 }
 
 find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
