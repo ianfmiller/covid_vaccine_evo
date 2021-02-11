@@ -90,3 +90,41 @@ plot.s<-function(plot.mat,cols,col.vals) #plotting function
     }
   }
 }
+
+outcome.col.func<-function(R0.obs,R0.mutant)
+{
+  
+  if(R0.obs<R0.mutant) # selection for increased virulence
+  {
+    if(R0.obs<1 && R0.mutant<1) {val<-viridis(5)[1]} # erad w/ selection for increased virulence
+    if(R0.obs<1 && R0.mutant>=1) {val<-viridis(5)[2]} # erad w/ evol escape
+    if(R0.obs>=1 && R0.mutant>=1) {val<-viridis(5)[3]} # selection for increased virulence
+  }
+  
+  if(R0.obs>=R0.mutant) # selection against increased virulence
+  {
+    if(R0.obs<1) {val<-viridis(5)[4]} # erad w/ selection against increased virulence
+    if(R0.obs>=1) {val<-viridis(5)[5]} # selection against increased virulence, no erad
+  }
+  return(val)
+}
+
+plot.outcome<-function(plot.mat.R0.obs,plot.mat.R0.mutatnt)
+{
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,length.out = res)
+  yy<-seq(0,1,length.out = res)
+  for(i in 1:res)
+  {
+    for(j in 1:res)
+    {
+      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = outcome.col.func(plot.mat.R0.obs[i,j],plot.mat.R0.mutant[i,j]),border=NA)
+    }
+  }
+}
+
+
+
+
+
+
