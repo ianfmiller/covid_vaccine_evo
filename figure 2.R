@@ -127,13 +127,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
@@ -166,13 +166,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
@@ -258,13 +258,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
@@ -296,13 +296,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
@@ -424,13 +424,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
@@ -460,13 +460,13 @@ rLn<-rLn.fix
     {
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
       parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=37,outnames=paste0("out",0:36))
+                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.mutant<-getR0(Fmat,Vmat)
       
