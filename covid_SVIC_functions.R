@@ -54,7 +54,7 @@ R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr,
 
 b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
 {
-  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
+  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0.0025,1),maximum = T,tol=1e-10)$maximum
 }
 
 find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
@@ -90,3 +90,41 @@ plot.s<-function(plot.mat,cols,col.vals) #plotting function
     }
   }
 }
+
+outcome.col.func<-function(R0.obs,R0.mutant)
+{
+  
+  if(R0.obs<R0.mutant) # selection for increased virulence
+  {
+    if(R0.obs<1 && R0.mutant<1) {val<-viridis(4,alpha=.75)[1]} # erad w/ selection for increased virulence
+    if(R0.obs<1 && R0.mutant>=1) {val<-viridis(4)[3]} # erad w/ evol escape
+    if(R0.obs>=1 && R0.mutant>=1) {val<-viridis(4)[4]} # selection for increased virulence
+  }
+  
+  if(R0.obs>=R0.mutant) # selection against increased virulence
+  {
+    if(R0.obs<1) {val<-viridis(4)[1]} # erad w/ selection against increased virulence
+    if(R0.obs>=1) {val<-viridis(4)[2]} # selection against increased virulence, no erad
+  }
+  return(val)
+}
+
+plot.outcome<-function(plot.mat.R0.obs,plot.mat.R0.mutatnt)
+{
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,length.out = res)
+  yy<-seq(0,1,length.out = res)
+  for(i in 1:res)
+  {
+    for(j in 1:res)
+    {
+      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = outcome.col.func(plot.mat.R0.obs[i,j],plot.mat.R0.mutant[i,j]),border=NA)
+    }
+  }
+}
+
+
+
+
+
+
