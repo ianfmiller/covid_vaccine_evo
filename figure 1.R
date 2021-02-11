@@ -114,6 +114,6 @@ points(vs,R0s2,col=viridis(3)[2],type="l",lwd=12)
 points(vs,R0s3,col=viridis(3)[3],type="l",lwd=12)
 mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
-legend("bottomright",legend=c("optim vir = 0.0075","optim vir = 0.01125","optim vir = 0.015"),col=viridis(3),lwd=12,cex=1.5)
+legend("topright",legend=c("optim vir = 0.0075","optim vir = 0.01125","optim vir = 0.015"),col=viridis(3),lwd=12,cex=1.5)
 
 
