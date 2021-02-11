@@ -152,7 +152,7 @@ rLn<-rLn.fix
   mtext(expression(alpha['optim']*' = 0.0015'),side=2,line=7,cex=1.25)
 }
 
-# 20% vacc
+# 50% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
@@ -190,7 +190,7 @@ rLn<-rLn.fix
   #mtext(expression('selection for '*alpha*' = 0.01'),side=3,line=4,font=2,cex=1.2)
 }
 
-# 50% vacc
+# 90% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
@@ -282,7 +282,7 @@ rLn<-rLn.fix
   mtext(expression(alpha['optim']*' = 0.01125'),side=2,line=7,cex=1.25)
 }
 
-# 20% vacc
+# 50% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
@@ -319,7 +319,7 @@ rLn<-rLn.fix
   #mtext(expression('selection for '*alpha*' = 0.01'),side=3,line=4,font=2,cex=1.2)
 }
 
-# 50% vacc
+# 90% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
@@ -410,7 +410,7 @@ rLn<-rLn.fix
   mtext(expression(alpha['optim']*' = 0.0075'),side=2,line=7,cex=1.25)
 }
 
-# 20% vacc
+# 50% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
@@ -446,7 +446,7 @@ rLn<-rLn.fix
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
 }
 
-# 50% vacc
+# 90% vacc
 {
   get.states(p.C=.2,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
