@@ -95,7 +95,7 @@ points(vs.alt,trans.rates2.alt,col=viridis(3)[2],type="l",lwd=12,lty=1)
 points(vs.alt,trans.rates3.alt,col=viridis(3)[3],type="l",lwd=12,lty=1)
 
 par(fig = c(1/3,2/3, 0, 1), new = T)
-plot(vs,death.rates1,xlim=c(0.0055,.017),ylim=c(0,2),xlab="virulence",ylab="transmisison time",type="n",cex.lab=2,cex.axis=1.2)
+plot(vs,death.rates1,xlim=c(0.0055,.017),ylim=c(.5,2),xlab="virulence",ylab="transmisison time",type="n",cex.lab=2,cex.axis=1.2)
 abline(v=.0075,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
 abline(v=.01125,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
 abline(v=.015,col=viridis(3,alpha=.5)[3],lwd=4,lty=2)
