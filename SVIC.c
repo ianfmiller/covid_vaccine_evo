@@ -17,7 +17,7 @@ static double parms[10];
 
 double betafunc (double virulence, double rU_effect, double rL_effect, double frac_lower_effect) {
 double result;
-result = (1-frac_lower_effect)*b1*pow((1-rU_effect)*virulence,b2) + (frac_lower_effect)*b1*pow((1-rL_effect)*virulence,b2);
+result = (1-frac_lower_effect)*b1*pow((1-rU_effect)*(virulence-.0025),b2) + (frac_lower_effect)*b1*pow((1-rL_effect)*(virulence-.0025),b2);
 return result; 
 }
        
