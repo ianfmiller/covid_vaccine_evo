@@ -96,15 +96,15 @@ outcome.col.func<-function(R0.obs,R0.mutant)
   
   if(R0.obs<R0.mutant) # selection for increased virulence
   {
-    if(R0.obs<1 && R0.mutant<1) {val<-viridis(5)[1]} # erad w/ selection for increased virulence
-    if(R0.obs<1 && R0.mutant>=1) {val<-viridis(5)[2]} # erad w/ evol escape
-    if(R0.obs>=1 && R0.mutant>=1) {val<-viridis(5)[3]} # selection for increased virulence
+    if(R0.obs<1 && R0.mutant<1) {val<-viridis(4,alpha=.75)[1]} # erad w/ selection for increased virulence
+    if(R0.obs<1 && R0.mutant>=1) {val<-viridis(4)[3]} # erad w/ evol escape
+    if(R0.obs>=1 && R0.mutant>=1) {val<-viridis(4)[4]} # selection for increased virulence
   }
   
   if(R0.obs>=R0.mutant) # selection against increased virulence
   {
-    if(R0.obs<1) {val<-viridis(5)[4]} # erad w/ selection against increased virulence
-    if(R0.obs>=1) {val<-viridis(5)[5]} # selection against increased virulence, no erad
+    if(R0.obs<1) {val<-viridis(4)[1]} # erad w/ selection against increased virulence
+    if(R0.obs>=1) {val<-viridis(4)[2]} # selection against increased virulence, no erad
   }
   return(val)
 }
