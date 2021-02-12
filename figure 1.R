@@ -15,8 +15,8 @@ gamma<-1/7
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
 
@@ -116,4 +116,5 @@ mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
 legend("topright",legend=c("optim vir = 0.0075","optim vir = 0.01125","optim vir = 0.015"),col=viridis(3),lwd=12,cex=1.5)
 
+# copy with dimensions 1159 x 621
 

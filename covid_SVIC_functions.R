@@ -41,7 +41,7 @@ get.states<-function(p.C, p.I, p.vacc) #set initial conditions
 
 find.R0<-function(v,b1,b2) # get R0 given vr, b1, b2
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v,prop=prop)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,prop=prop)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
   get.matricies(new.out)
@@ -59,17 +59,17 @@ b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim v
   optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0.0025,1),maximum = T,tol=1e-10)$maximum
 }
 
-find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
+find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b2
 {
   rU<-rU
   rL<-rL
-  rUn<-rUn
-  rLn<-rLn
+  rUc<-rUc
+  rLc<-rLc
   
   R0s<-c()
   for(v in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v,prop=prop)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,prop=prop)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
     get.matricies(new.out)

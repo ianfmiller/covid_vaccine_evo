@@ -22,8 +22,8 @@ R0.assumed<-3.75
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 frac_lower<-.1 # % contribution of lower respiratory infection to overall transmission
 
@@ -94,8 +94,8 @@ par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
 #### analysis
 
-rUn.fix<-.5 #convalescent class
-rLn.fix<-.75 #convalescent class
+rUc.fix<-.5 #convalescent class
+rLc.fix<-.75 #convalescent class
 
 ### optim vir = 2 * obs vir
 
@@ -104,15 +104,15 @@ color.index<-1 #index to match colors and color values to right analysis. 1 -> o
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
-rUn<-rUn.fix
-rLn<-rLn.fix
+rUc<-rUc.fix
+rLc<-rLc.fix
 
 # 10% vacc
 {
@@ -125,13 +125,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -162,13 +162,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -198,13 +198,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -228,15 +228,15 @@ color.index<-2 #index to match colors and color values to right analysis. 1 -> o
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
-rUn<-rUn.fix
-rLn<-rLn.fix
+rUc<-rUc.fix
+rLc<-rLc.fix
 
 # 10% vacc
 {
@@ -250,13 +250,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -285,13 +285,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -319,13 +319,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -348,15 +348,15 @@ color.index<-3 #index to match colors and color values to right analysis. 1 -> o
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
-rUn<-0 #convalescent class
-rLn<-0 #convalescent class
+rUc<-0 #convalescent class
+rLc<-0 #convalescent class
 
 get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
-rUn<-rUn.fix
-rLn<-rLn.fix
+rUc<-rUc.fix
+rLc<-rLc.fix
 
 # 10% vacc
 {
@@ -370,13 +370,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -405,13 +405,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -439,13 +439,13 @@ rLn<-rLn.fix
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
