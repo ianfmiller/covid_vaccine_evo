@@ -85,7 +85,7 @@ s.col.vals3<-seq(-.55,.55,length.out = 801)
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
-res<-51
+res<-21
 
 ### set plot window
 
@@ -116,7 +116,7 @@ rLn<-rLn.fix
 
 # 10% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.1)
+  get.states(p.C=.25,p.I=0,p.vacc=.1)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -152,7 +152,7 @@ rLn<-rLn.fix
 
 # 20% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.5)
+  get.states(p.C=.25,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -188,7 +188,7 @@ rLn<-rLn.fix
 
 # 90% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.9)
+  get.states(p.C=.25,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -240,7 +240,7 @@ rLn<-rLn.fix
 
 # 10% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.1)
+  get.states(p.C=.25,p.I=0,p.vacc=.1)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -275,7 +275,7 @@ rLn<-rLn.fix
 
 # 50% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.5)
+  get.states(p.C=.25,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -309,7 +309,7 @@ rLn<-rLn.fix
 
 # 90% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.9)
+  get.states(p.C=.25,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -360,7 +360,7 @@ rLn<-rLn.fix
 
 # 10% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.1)
+  get.states(p.C=.25,p.I=0,p.vacc=.1)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -395,7 +395,7 @@ rLn<-rLn.fix
 
 # 50% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.5)
+  get.states(p.C=.25,p.I=0,p.vacc=.5)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
@@ -429,7 +429,7 @@ rLn<-rLn.fix
 
 # 90% vacc
 {
-  get.states(p.C=.2,p.I=0,p.vacc=.9)
+  get.states(p.C=.25,p.I=0,p.vacc=.9)
   plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
   plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
   R0.obs.vec<-c()
