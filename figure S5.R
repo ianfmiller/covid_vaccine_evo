@@ -484,4 +484,4 @@ legend("left",yjust=.5,
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
 
-## copy to clipboard with width of 1440, height of 850
+## copy to clipboard with width of 1185, height of 843
