@@ -95,7 +95,8 @@ plot.s<-function(plot.mat,cols,col.vals) #plotting function
 
 outcome.col.func<-function(R0.obs,R0.mutant)
 {
-  
+  if(abs(R0.obs)<1e-10) {R0.obs<-0}
+  if(abs(R0.mutant)<1e-10) {R0.mutant<-0}
   if(R0.obs<R0.mutant) # selection for increased virulence
   {
     if(R0.obs<1 && R0.mutant<1) {val<-viridis(4,alpha=.75)[1]} # erad w/ selection for increased virulence
