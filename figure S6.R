@@ -67,25 +67,25 @@ b1<-uniroot(R0.search,c(0,200),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 col.trans<-.6
 
-s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
-s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
+s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
+s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
 s.colors1<-c(s.blues1,"white",s.reds1)
-s.col.vals1<-seq(-7.5,7.5,length.out = 801)
+s.col.vals1<-seq(-7.5,7.5,length.out = 401)
 
-s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
-s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
+s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
+s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
 s.colors2<-c(s.blues2,"white",s.reds2)
-s.col.vals2<-seq(-7.5,7.5,length.out = 801)
+s.col.vals2<-seq(-7.5,7.5,length.out = 401)
 
-s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
-s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
+s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
+s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
 s.colors3<-c(s.blues3,"white",s.reds3)
-s.col.vals3<-seq(-7.5,7.5,length.out = 801)
+s.col.vals3<-seq(-7.5,7.5,length.out = 401)
 
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
-res<-21
+res<-101
 
 ### set plot window
 

@@ -85,7 +85,7 @@ s.col.vals3<-seq(-.55,.55,length.out = 801)
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
-res<-21
+res<-101
 
 ### set plot window
 
@@ -466,11 +466,11 @@ plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F,xlim=c(0,1),ylim=c(0,1))
 par(oma=c(4,0,4,0),mar=c(5,0,4,0))
 legend("left",yjust=.5,
        legend=c(
-         expression(' 1 > '*R[0](alpha[obs])*' > '*R[0](2*alpha[obs])),
-         expression(' 1 > '*R[0](2*alpha[obs])*' > '*R[0](alpha[obs])),
-         expression(' '*R[0](alpha[obs])*' > 1 & '*R[0](alpha[obs])*' > '*R[0](2*alpha[obs])),
-         expression(' '*R[0](2*alpha[obs])*' > 1 > '*R[0](alpha[obs])),
-         expression(' '*R[0](2*alpha[obs])*' > 1 & '*R[0](2*alpha[obs])*' > '*R[0](alpha[obs]))
+         expression(' 1 > '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
+         expression(' 1 > '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs])),
+         expression(' '*R[E](alpha[obs])*' > 1 & '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
+         expression(' '*R[E](2*alpha[obs])*' > 1 > '*R[E](alpha[obs])),
+         expression(' '*R[E](2*alpha[obs])*' > 1 & '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs]))
        ),
        col=c(
          viridis(4)[1],
