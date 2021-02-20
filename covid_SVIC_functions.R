@@ -1,5 +1,7 @@
 ### convenience functions for analysis
 
+library(viridis)
+
 ## functions for setting b1 according to assumed ES virulence, dr, and gamma
 
 get.matricies<-function(output) #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
@@ -39,7 +41,7 @@ get.states<-function(p.C, p.I, p.vacc) #set initial conditions
 
 find.R0<-function(v,b1,b2) # get R0 given vr, b1, b2
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,prop=prop)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
   get.matricies(new.out)
@@ -54,20 +56,20 @@ R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr,
 
 b2.search<-function(b1,b2,optim.vir.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
 {
-  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0,1),maximum = T,tol=1e-10)$maximum
+  optim.vir.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0.0025,1),maximum = T,tol=1e-10)$maximum
 }
 
-find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b2
+find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b2
 {
   rU<-rU
   rL<-rL
-  rUn<-rUn
-  rLn<-rLn
+  rUc<-rUc
+  rLc<-rLc
   
   R0s<-c()
   for(v in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUn=rUn,rLn=rLn,frac_lower=frac_lower,v=v)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rU,rL=rL,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v,prop=prop)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
     get.matricies(new.out)
@@ -79,14 +81,53 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUn,rLn) # get optim vir given b1, b
 
 plot.s<-function(plot.mat,cols,col.vals) #plotting function
 {
-  plot(0,0,type="n",xlim=c(-.025,1.025),ylim=c(-0.025,1.025),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
-  xx<-seq(0,1,.05)
-  yy<-seq(0,1,.05)
-  for(i in 1:21)
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,length.out = res)
+  yy<-seq(0,1,length.out = res)
+  for(i in 1:res)
   {
-    for(j in 1:21)
+    for(j in 1:res)
     {
-      rect(xx[i]-.025,yy[j]-.025,xx[i]+.025,yy[j]+.025,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
+      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
     }
   }
 }
+
+outcome.col.func<-function(R0.obs,R0.mutant)
+{
+  if(abs(R0.obs)<1e-10) {R0.obs<-0}
+  if(abs(R0.mutant)<1e-10) {R0.mutant<-0}
+  if(R0.obs<R0.mutant) # selection for increased virulence
+  {
+    if(R0.obs<1 && R0.mutant<1) {val<-viridis(4,alpha=.75)[1]} # erad w/ selection for increased virulence
+    if(R0.obs<1 && R0.mutant>=1) {val<-viridis(4)[3]} # erad w/ evol escape
+    if(R0.obs>=1 && R0.mutant>=1) {val<-viridis(4)[4]} # selection for increased virulence
+  }
+  
+  if(R0.obs>=R0.mutant) # selection against increased virulence
+  {
+    if(R0.obs<1) {val<-viridis(4)[1]} # erad w/ selection against increased virulence
+    if(R0.obs>=1) {val<-viridis(4)[2]} # selection against increased virulence, no erad
+  }
+  return(val)
+}
+
+plot.outcome<-function(plot.mat.R0.obs,plot.mat.R0.mutatnt)
+{
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  xx<-seq(0,1,length.out = res)
+  yy<-seq(0,1,length.out = res)
+  for(i in 1:res)
+  {
+    for(j in 1:res)
+    {
+      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = outcome.col.func(plot.mat.R0.obs[i,j],plot.mat.R0.mutant[i,j]),border=NA)
+    }
+  }
+}
+
+
+
+
+
+

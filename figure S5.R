@@ -67,20 +67,20 @@ b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 col.trans<-.6
 
-s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
+s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
+s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
 s.colors1<-c(s.blues1,"white",s.reds1)
-s.col.vals1<-seq(-1.1,1.1,length.out = 401)
+s.col.vals1<-seq(-.55,.55,length.out = 801)
 
-s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
+s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
+s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
 s.colors2<-c(s.blues2,"white",s.reds2)
-s.col.vals2<-seq(-1.1,1.1,length.out = 401)
+s.col.vals2<-seq(-.55,.55,length.out = 801)
 
-s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
+s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 400)^col.trans)
+s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 400)^col.trans)
 s.colors3<-c(s.blues3,"white",s.reds3)
-s.col.vals3<-seq(-1.1,1.1,length.out = 401)
+s.col.vals3<-seq(-.55,.55,length.out = 801)
 
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
@@ -89,13 +89,13 @@ res<-101
 
 ### set plot window
 
-layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
+layout(matrix(c(1,1,2,2,3,3,10,10,4,4,5,5,6,6,10,10,7,7,8,8,9,9,10,10),3,8,byrow = T))
 par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
 #### analysis
 
-rUc.fix<-.5 #convalescent class
-rLc.fix<-.75 #convalescent class
+rUc.fix<-.25 #convalescent class
+rLc.fix<-.5 #convalescent class
 
 ### optim vir = 2 * obs vir
 
@@ -144,9 +144,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   #mtext(expression('r'[L]),side = 2,line=2.5)
   mtext("10% vaccinated",line=2,cex=1.25)
   mtext(expression(alpha['optim']*' = 0.015'),side=2,line=7,cex=1.25)
@@ -183,9 +181,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   mtext("50% vaccinated",line=2,cex=1.25)
   #mtext(expression('selection for '*alpha*' = 0.01'),side=3,line=4,font=2,cex=1.2)
 }
@@ -221,9 +217,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   mtext("90% vaccinated",line=2,cex=1.25)
 }
 
@@ -275,9 +269,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   mtext(expression(alpha['optim']*' = 0.01125'),side=2,line=7,cex=1.25)
 }
 
@@ -312,9 +304,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
 }
 
 # 90% vacc
@@ -348,9 +338,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
 }
 
 ### optim vir = obs vir
@@ -401,9 +389,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   mtext(expression(alpha['optim']*' = 0.0075'),side=2,line=7,cex=1.25)
 }
 
@@ -438,9 +424,7 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
 }
 
 # 90% vacc
@@ -474,22 +458,30 @@ rLc<-rLc.fix
   
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-}
-
-#legend
-{
-  par(mar=c(2,1,2,5))
-  yy<-seq(0,length(s.col.vals[[color.index]]),1)
-  plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
-  color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
-  axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
-  mtext("change in selection",side=4,line =2)
+  plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
 }
 
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
 
-## copy to clipboard with width of 1051, height of 843
+#legend
+plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F,xlim=c(0,1),ylim=c(0,1))
+par(oma=c(4,0,4,0),mar=c(5,0,4,0))
+legend("left",yjust=.5,
+       legend=c(
+         expression(' 1 > '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
+         expression(' 1 > '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs])),
+         expression(' '*R[E](alpha[obs])*' > 1 & '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
+         expression(' '*R[E](2*alpha[obs])*' > 1 > '*R[E](alpha[obs])),
+         expression(' '*R[E](2*alpha[obs])*' > 1 & '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs]))
+       ),
+       col=c(
+         viridis(4)[1],
+         viridis(4,alpha=.5)[1],
+         viridis(4)[2],
+         viridis(4)[3],
+         viridis(4)[4]
+       ),
+       pch=15,cex=1.25,pt.cex = 4,bty="n",y.intersp = 1.5)
+
+## copy to clipboard with width of 1185, height of 843
