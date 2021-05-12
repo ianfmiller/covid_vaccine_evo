@@ -97,7 +97,7 @@ par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 rUc.fix<-.5 #convalescent class
 rLc.fix<-.75 #convalescent class
 
-### optim vir = 2 * obs vir
+### optim vir = 2 * alpha[B.1.1.7]
 
 optim.vir.assumed<-.0075*2 #set to either .005, .01, .0025
 color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
@@ -131,7 +131,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -147,7 +147,7 @@ rLc<-rLc.fix
   plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
   #mtext(expression('r'[L]),side = 2,line=2.5)
   mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = 0.015'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[ansc]*' * 2.0'),side=2,line=7,cex=1.25)
 }
 
 # 20% vacc
@@ -168,7 +168,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -204,7 +204,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -221,9 +221,9 @@ rLc<-rLc.fix
   mtext("90% vaccinated",line=2,cex=1.25)
 }
 
-### optim vir = 1.5 * obs vir
+### optim vir = alpha[B.1.1.7]
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075*1.5 #set to either .005, .01, .0025
+optim.vir.assumed<-.0075 #set to either .005, .01, .0025
 color.index<-2 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -256,7 +256,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -270,7 +270,7 @@ rLc<-rLc.fix
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
-  mtext(expression(alpha['optim']*' = 0.01125'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.y]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -291,7 +291,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -325,7 +325,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -343,7 +343,7 @@ rLc<-rLc.fix
 
 ### optim vir = obs vir
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075 #set to either .005, .01, .0025
+optim.vir.assumed<-.00625 #set to either .005, .01, .0025
 color.index<-3 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -376,7 +376,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -390,7 +390,7 @@ rLc<-rLc.fix
   plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   plot.outcome(plot.mat.R0.obs,plot.mat.R0.mutant)
-  mtext(expression(alpha['optim']*' = 0.0075'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[ansc]*' * 1.25'),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -411,7 +411,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -445,7 +445,7 @@ rLc<-rLc.fix
       get.matricies(out2)
       R0.obs<-getR0(Fmat,Vmat)
       
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
+      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
       out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
                   dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
       get.matricies(out2)
@@ -466,22 +466,22 @@ plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F,xlim=c(0,1),ylim=c(0,1))
 par(oma=c(4,0,4,0),mar=c(5,0,4,0))
 legend("left",yjust=.5,
        legend=c(
-        expression(' 1 > '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
-        expression(' 1 > '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs])),
-        expression(' '*R[E](alpha[obs])*' > 1 & '*R[E](alpha[obs])*' > '*R[E](2*alpha[obs])),
-        expression(' '*R[E](2*alpha[obs])*' > 1 > '*R[E](alpha[obs])),
-        expression(' '*R[E](2*alpha[obs])*' > 1 & '*R[E](2*alpha[obs])*' > '*R[E](alpha[obs]))
+        expression(' 1 > '*R[E](alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7]*'*1.5')),NA,NA,
+        expression(' 1 > '*R[E](alpha[B.1.1.7]*'*1.5')*' > '*R[E](alpha[B.1.1.7])),NA,NA,
+        expression(' '*R[E](alpha[B.1.1.7])*' > 1 & '),expression(R[E](alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7]*'*1.5')),NA,
+        expression(' '*R[E](alpha[B.1.1.7]*'*1.5')*' > 1 > '*R[E](alpha[B.1.1.7])),NA,NA,
+        expression(' '*R[E](alpha[B.1.1.7]*'*1.5')*' > 1 &'),expression(R[E](alpha[B.1.1.7]*'*1.5')*' > '*R[E](alpha[B.1.1.7])),NA
         ),
       col=c(
-        viridis(4)[1],
-        viridis(4,alpha=.5)[1],
-        viridis(4)[2],
-        viridis(4)[3],
-        viridis(4)[4]
+        viridis(4)[1],NA,NA,
+        viridis(4,alpha=.5)[1],NA,NA,
+        viridis(4)[2],NA,NA,
+        viridis(4)[3],NA,NA,
+        viridis(4)[4],NA,NA
         ),
-      pch=15,cex=1.25,pt.cex = 4,bty="n",y.intersp = 1.5)
+      pch=15,cex=1.1,pt.cex = 4,bty="n",y.intersp = 1.5)
 
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
 
-## copy to clipboard with width of 1185, height of 843
+## copy to clipboard with width of 906, height of 666
