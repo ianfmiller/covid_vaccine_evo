@@ -29,7 +29,7 @@ vir.obs<-.0075
 vs<-seq(.0025,.017,.00001)
 vs.alt<-seq(0,40,.01)
 #### scenario 1
-optim.vir.assumed<-.0075
+optim.vir.assumed<-.00625
 prop<-66.666
 
 get.states(0,0,0)
@@ -46,7 +46,7 @@ R0s1<-out[[2]]
 
 
 #### scenario 2
-optim.vir.assumed<-.0075*1.5
+optim.vir.assumed<-.0075
 prop<-66.666
 
 get.states(0,0,0)
@@ -78,9 +78,9 @@ R0s3<-out[[2]]
 ### plot
 
 par(mfrow=c(1,3),mar=c(5,5,4,1))
-plot(vs,trans.rates1,xlim=c(0.0055,.017),ylim=c(1.75,5),xlab="virulence",ylab="transmisison rate",type="n",cex.lab=2,cex.axis=1.2)
-abline(v=.0075,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
-abline(v=.01125,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
+plot(vs,trans.rates1,xlim=c(0.004,.017),ylim=c(1.75,5),xlab="virulence",ylab="transmisison rate",type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00625,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.0075,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
 abline(v=.015,col=viridis(3,alpha=.5)[3],lwd=4,lty=2)
 points(vs,trans.rates1,col=viridis(3)[1],type="l",lwd=12,lty=1)
 points(vs,trans.rates2,col=viridis(3)[2],type="l",lwd=12,lty=1)
@@ -95,9 +95,9 @@ mtext("A",side=3,line=1,font=2,adj=0,padj = 0)
 #points(vs.alt,trans.rates3.alt,col=viridis(3)[3],type="l",lwd=12,lty=1)
 
 #par(fig = c(1/3,2/3, 0, 1), new = T)
-plot(vs,death.rates1,xlim=c(0.0055,.017),ylim=c(.5,2),xlab="virulence",ylab="transmisison time",type="n",cex.lab=2,cex.axis=1.2)
-abline(v=.0075,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
-abline(v=.01125,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
+plot(vs,death.rates1,xlim=c(.004,.017),ylim=c(.5,2),xlab="virulence",ylab="transmisison time",type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00625,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.0075,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
 abline(v=.015,col=viridis(3,alpha=.5)[3],lwd=4,lty=2)
 points(vs,death.rates1,col=viridis(3)[1],type="l",lwd=12,lty=1)
 points(vs,death.rates2,col=viridis(3)[2],type="l",lwd=6,lty=1)
@@ -105,16 +105,16 @@ points(vs,death.rates3,col=viridis(3)[3],type="l",lwd=4,lty=2)
 mtext("B",side=3,line=1,font=2,adj=0,padj = 0)
 
 #par(fig = c(2/3,3/3, 0, 1), new = T)
-plot(vs,R0s1,xlim=c(0.0055,.017),ylim=c(3.4,4.5),xlab="virulence",ylab="fitness",type="n",cex.lab=2,cex.axis=1.2)
-abline(v=.0075,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
-abline(v=.01125,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
+plot(vs,R0s1,xlim=c(.004,.017),ylim=c(3.4,4.5),xlab="virulence",ylab="fitness",type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00625,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.0075,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
 abline(v=.015,col=viridis(3,alpha=.5)[3],lwd=4,lty=2)
 points(vs,R0s1,col=viridis(3)[1],type="l",lwd=12)
 points(vs,R0s2,col=viridis(3)[2],type="l",lwd=12)
 points(vs,R0s3,col=viridis(3)[3],type="l",lwd=12)
 mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
-legend("topright",legend=c("optim vir = 0.0075","optim vir = 0.01125","optim vir = 0.015"),col=viridis(3),lwd=12,cex=1.5)
+legend("topright",legend=c(expression('optim vir = '*alpha[ansc]*' * 1.25'),expression('optim vir = '*alpha[B.1.1.7]),expression('optim vir = '*alpha[B.1.1.7]*' * 2.0')),col=viridis(3),lwd=12,cex=1.5)
 
 # copy with dimensions 1159 x 621
 
