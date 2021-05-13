@@ -114,7 +114,7 @@ points(vs,R0s2,col=viridis(3)[2],type="l",lwd=12)
 points(vs,R0s3,col=viridis(3)[3],type="l",lwd=12)
 mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
-legend("topright",legend=c(expression('optim vir = '*alpha[ansc]*' * 1.25'),expression('optim vir = '*alpha[B.1.1.7]),expression('optim vir = '*alpha[B.1.1.7]*' * 2.0')),col=viridis(3),lwd=12,cex=1.5)
+legend("topright",legend=c(expression(alpha[optim]*' = 1.25*'*alpha[ansc]),expression(alpha[optim]*' = '*alpha[B.1.1.7]),expression(alpha[optim]*' = 2*'*alpha[B.1.1.7])),col=viridis(3),lwd=12,cex=1.5)
 
 # copy with dimensions 1159 x 621
 
