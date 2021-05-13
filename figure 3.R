@@ -149,7 +149,7 @@ rLc<-rLc.fix
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
   mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = '*alpha[ansc]*' * 2.0'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = 2*'*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -279,7 +279,7 @@ rLc<-rLc.fix
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
-  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.y]),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -407,7 +407,7 @@ rLc<-rLc.fix
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
-  mtext(expression(alpha['optim']*' = '*alpha[ansc]*' * 1.25'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = 1.25*'*alpha[ansc]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
