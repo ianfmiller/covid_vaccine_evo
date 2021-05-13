@@ -149,7 +149,7 @@ rLc<-rLc.fix
   contour(s.mat-s.mat[1,1],add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
   mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = 0.015'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = 2*'*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 20% vacc
@@ -229,7 +229,7 @@ rLc<-rLc.fix
 
 ### optim vir = 1.5 * obs vir
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075*1.5 #set to either .005, .01, .0025
+optim.vir.assumed<-.0075 #set to either .005, .01, .0025
 color.index<-2 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -278,7 +278,7 @@ rLc<-rLc.fix
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
   contour(s.mat-s.mat[1,1],add=T)
-  mtext(expression(alpha['optim']*' = 0.01125'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -355,7 +355,7 @@ rLc<-rLc.fix
 
 ### optim vir = obs vir
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075 #set to either .005, .01, .0025
+optim.vir.assumed<-.00625 #set to either .005, .01, .0025
 color.index<-3 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -404,7 +404,7 @@ rLc<-rLc.fix
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
     contour(s.mat-s.mat[1,1],add=T)
-  mtext(expression(alpha['optim']*' = 0.0075'),side=2,line=7,cex=1.25)
+    mtext(expression(alpha['optim']*' = 1.25*'*alpha[ansc]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc

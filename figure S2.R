@@ -149,7 +149,7 @@ rLc<-rLc.fix
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
   mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = 0.0015'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = 2*'*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -230,7 +230,7 @@ rLc<-rLc.fix
 
 ### optim vir = 1.5 * obs vir
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075*1.5 #set to either .005, .01, .0025
+optim.vir.assumed<-.0075 #set to either .005, .01, .0025
 color.index<-2 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -279,7 +279,7 @@ rLc<-rLc.fix
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
-  mtext(expression(alpha['optim']*' = 0.01125'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
 }
 
 # 50% vacc
@@ -358,7 +358,7 @@ rLc<-rLc.fix
 
 ### optim vir = obs vir
 par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075 #set to either .005, .01, .0025
+optim.vir.assumed<-.00625 #set to either .005, .01, .0025
 color.index<-3 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -407,7 +407,7 @@ rLc<-rLc.fix
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
   contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
-  mtext(expression(alpha['optim']*' = 0.0075'),side=2,line=7,cex=1.25)
+  mtext(expression(alpha['optim']*' = 1.25*'*alpha[ansc]),side=2,line=7,cex=1.25)
 }
 
 # 20% vacc
@@ -488,7 +488,8 @@ rLc<-rLc.fix
   yy<-seq(0,length(s.col.vals[[color.index]]),1)
   plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
   color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
-  axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
+  #axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
+  axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = c(-14,-7,0,7,14))
   mtext("selection",side=4,line =2)
 }
 
