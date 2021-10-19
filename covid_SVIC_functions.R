@@ -25,9 +25,9 @@ get.states<-function(p.C, p.I, p.vacc) #set initial conditions
 {
   S_0=1-p.vacc-p.I-p.C #susceptible
   V_0=p.vacc #vaccinated
-  I_n_0=p.I #infected--naive--resdient strain
-  I_v_0=0 #infected--vaccinated--resdient strain
-  I_c_0=0 #infected--convalescent--resident strain
+  I_n_0=p.I*(1-p.C-p.vacc) #infected--naive--resdient strain
+  I_v_0=p.I*(p.vacc) #infected--vaccinated--resdient strain
+  I_c_0=p.I*(p.C) #infected--convalescent--resident strain
   C_0=p.C #convalescent
   
   states<<-c(S=S_0,
