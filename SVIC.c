@@ -39,11 +39,11 @@ void derivs (int *neq, double *t, double *y, double *ydot,double *yout, double *
 
 /* S */
   
-ydot[0] = -y[0] * ((y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) + mu) + y[6]*omega + y[7]*omegav + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*(1-f);
+ydot[0] = -y[0] * ((y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) + mu) + y[6]*omega + y[7]*omegav + y[1]*omegav + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*(1-f);
 
-/* alpha */
+/* V */
   
-ydot[1] =  -y[1] * (((1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + mu) + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*f;
+ydot[1] =  -y[1] * (((1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + mu + omegav) + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*f;
 
 /* I_0 */
  
@@ -63,7 +63,7 @@ ydot[5] = y[7] * (1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(al
 
 /* C */
   
-ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
+ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
 
 /* C_V */
 
