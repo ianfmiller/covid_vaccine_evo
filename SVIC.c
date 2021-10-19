@@ -1,30 +1,35 @@
 /* file sirmodess.c */
 #include <R.h>
 #include <math.h>
-static double parms[10];
+static double parms[14];
 #define b1 parms[0]
 #define b2 parms[1]
 #define gamma parms[2]
-#define rU parms[3]
-#define rL parms[4]
+#define rUv parms[3]
+#define rLv parms[4]
 #define rUc parms[5]
 #define rLc parms[6]
-#define frac_lower parms[7]
-#define v parms[8]
-#define prop parms[9]
+#define rUcv parms[5]
+#define rLcv parms[6]
+#define epsilon parms[7]
+#define alpha parms[8]
+#define p parms[9]
+#define omega parms[10]
+#define omegav parms[11]
+#define mu parms[12]
+#define f parms[13]
 
 
-
-double betafunc (double virulence, double rU_effect, double rL_effect, double frac_lower_effect) {
+double betafunc (double virulence, double rU_effect, double rL_effect, double epsilon_effect) {
 double result;
-result = (1-frac_lower_effect)*b1*pow((1-rU_effect)*(virulence-.0025),b2) + (frac_lower_effect)*b1*pow((1-rL_effect)*(virulence-.0025),b2);
+result = (1-epsilon_effect)*b1*pow((1-rU_effect)*(virulence-.0025),b2) + (epsilon_effect)*b1*pow((1-rL_effect)*(virulence-.0025),b2);
 return result; 
 }
        
 /* initializer */
 void initmod(void (* odeparms)(int *, double *))
 {
-  int N=10;
+  int N=14;
   odeparms(&N, parms);
 }
 
@@ -32,58 +37,83 @@ void initmod(void (* odeparms)(int *, double *))
 void derivs (int *neq, double *t, double *y, double *ydot,double *yout, double *out, int *ip)
 {
 
-/* susceptible */
+/* S */
   
-ydot[0] = -y[0] * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower));
+ydot[0] = -y[0] * ((y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) + mu) + y[6]*omega + y[7]*omegav + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*(1-f);
 
-/* vaccinated */
+/* alpha */
   
-ydot[1] =  -y[1] * (1-rU) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower));
+ydot[1] =  -y[1] * (((1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + mu) + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*f;
 
-/* infected--naive */
+/* I_0 */
  
-ydot[2] = y[0] * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower)) - (gamma + v*prop) * y[2];
+ydot[2] = y[0] * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + alpha*p + mu) * y[2];
 
-/* infected--vaccinated */
+/* I_V */
   
-ydot[3] = y[1] * (1-rU) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower)) - (gamma + v*(1-rL)*prop) * y[3];
+ydot[3] = y[1] * (1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLv)*alpha*p + mu) * y[3];
 
-/* infected--natural immunity */
+/* I_C */
 
-ydot[4] = y[5] * (1-rUc) * (y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower)) - (gamma + v*(1-rLc)*prop) * y[4];
+ydot[4] = y[6] * (1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLc)*alpha*p + mu) * y[4];
 
-/* convalescent */
+/* I_C_V */
+
+ydot[5] = y[7] * (1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLcv)*alpha*p + mu) * y[5];
+
+/* C */
   
-ydot[5] = gamma * (y[2] + y[3] + y[4]) - y[5]* (1-rUc)*(y[2]*betafunc(v,0,0,frac_lower) + y[3]*betafunc(v,rU,rL,frac_lower) + y[4]*betafunc(v,rUc,rLc,frac_lower));
+ydot[6] = gamma * (y[2] +  y[4]) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
+
+/* C_V */
+
+ydot[7] = gamma * (y[3] +  y[5]) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
 
 
 /* output for Fmat */
   
-yout[0] = y[0]*betafunc(v,0,0,frac_lower);
-yout[1] = y[0]*betafunc(v,rU,rL,frac_lower);
-yout[2] = y[0]*betafunc(v,rUc,rLc,frac_lower);
+yout[0] = y[0]*betafunc(alpha,0,0,epsilon);
+yout[1] = y[0]*betafunc(alpha,rUv,rLc,epsilon);
+yout[2] = y[0]*betafunc(alpha,rUc,rLc,epsilon);
+yout[3] = y[0]*betafunc(alpha,rUcv,rLcv,epsilon);
 
-yout[3] = y[1]*(1-rU)*betafunc(v,0,0,frac_lower);
-yout[4] = y[1]*(1-rU)*betafunc(v,rU,rL,frac_lower);
-yout[5] = y[1]*(1-rU)*betafunc(v,rUc,rLc,frac_lower);
+yout[4] = y[1]*(1-rUv)*betafunc(alpha,0,0,epsilon);
+yout[5] = y[1]*(1-rUv)*betafunc(alpha,rUv,rLc,epsilon);
+yout[6] = y[1]*(1-rUv)*betafunc(alpha,rUc,rLc,epsilon);
+yout[7] = y[1]*(1-rUv)*betafunc(alpha,rUcv,rLcv,epsilon);
 
-yout[6] = y[5]*(1-rUc)*betafunc(v,0,0,frac_lower);
-yout[7] = y[5]*(1-rUc)*betafunc(v,rU,rL,frac_lower);
-yout[8] = y[5]*(1-rUc)*betafunc(v,rUc,rLc,frac_lower);
+yout[8] = y[6]*(1-rUc)*betafunc(alpha,0,0,epsilon);
+yout[9] = y[6]*(1-rUc)*betafunc(alpha,rUv,rLc,epsilon);
+yout[10] = y[6]*(1-rUc)*betafunc(alpha,rUc,rLc,epsilon);
+yout[11] = y[6]*(1-rUc)*betafunc(alpha,rUcv,rLcv,epsilon);
+
+yout[12] = y[7]*(1-rUcv)*betafunc(alpha,0,0,epsilon);
+yout[13] = y[7]*(1-rUcv)*betafunc(alpha,rUv,rLc,epsilon);
+yout[14] = y[7]*(1-rUcv)*betafunc(alpha,rUc,rLc,epsilon);
+yout[15] = y[7]*(1-rUcv)*betafunc(alpha,rUcv,rLcv,epsilon);
+
   
  /* output for Vmat */
   
-yout[9] = gamma + v*prop;
-yout[10] = 0;
-yout[11] = 0;
+yout[16] = gamma + alpha*p + mu;
+yout[17] = 0;
+yout[18] = 0;
+yout[19] = 0;
 
-yout[12] = 0;
-yout[13] = gamma + v*prop*(1-rL);
-yout[14] = 0;
+yout[20] = 0;
+yout[21] = gamma + alpha*p*(1-rLc) + mu;
+yout[22] = 0;
+yout[23] = 0;
 
-yout[15] = 0;
-yout[16] = 0;
-yout[17] = gamma + v*prop*(1-rLc);
+yout[24] = 0;
+yout[25] = 0;
+yout[26] = gamma + alpha*p*(1-rLc) + mu;
+yout[27] = 0;
+
+yout[28] = 0;
+yout[29] = 0;
+yout[30] = 0;
+yout[31] = gamma + alpha*p*(1-rLc) + mu;
  
 }
 
