@@ -47,15 +47,15 @@ find.R0<-function(alpha,b1,b2) # get R0 given vr, b1, b2
 {
   parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                 dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:32))
+                 dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
   get.matricies(new.out)
   R0.calc<-getR0(Fmat,Vmat)
   R0.calc
 }
 
-R0.search<-function(vr,b1,b2) # get differen between assumed R0 and R0 given vr, b1, b2
+R0.search<-function(alpha,b1,b2) # get differen between assumed R0 and R0 given vr, b1, b2
 {
-  R0.assumed-find.R0(vr,b1,b2)
+  R0.assumed-find.R0(alpha,b1,b2)
 }
 
 b2.search<-function(b1,b2,optim.alpha.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
@@ -75,7 +75,7 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b
   {
     parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                   dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:32))
+                   dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
     get.matricies(new.out)
     R0.calc<-getR0(Fmat,Vmat)
     R0s<-c(R0s,R0.calc)
@@ -128,6 +128,30 @@ plot.outcome<-function(plot.mat.R0.obs,plot.mat.R0.mutatnt)
       rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = outcome.col.func(plot.mat.R0.obs[i,j],plot.mat.R0.mutant[i,j]),border=NA)
     }
   }
+}
+
+plot.simulation<-function(output,legend=T)
+{
+  S.plot<-output[,"S"]
+  V.plot<-output[,"V"]
+  I_0.plot<-output[,"I_0"]
+  I_V.plot<-output[,"I_V"]
+  I_C.plot<-output[,"I_C"]
+  I_C_V.plot<-output[,"I_C_V"]
+  C.plot<-output[,"C"]
+  C_V.plot<-output[,"C_V"]
+  plot.x<-1:nrow(output)
+  
+  plot(plot.x,S.plot,type="l",col="darkblue")
+  points(plot.x,V.plot,type="l",col="blue")
+  points(plot.x,I_0.plot,type="l",col="green1")
+  points(plot.x,I_V.plot,type="l",col="green2")
+  points(plot.x,I_C.plot,type="l",col="green3")
+  points(plot.x,I_C_V.plot,type="l",col="green4")
+  points(plot.x,C.plot,type="l",col="red1")
+  points(plot.x,C_V.plot,type="l",col="red2")
+  
+  
 }
 
 
