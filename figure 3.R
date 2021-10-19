@@ -12,13 +12,13 @@ dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
 gamma<-1/7
 
-optim.vir.assumed<-.0075 #set to either .01, .005, .0025
+optim.vir.assumed<-.01 #set to either .00875, .01, .02
 
-vir.obs<-.0075
+vir.obs<-.01
 
-prop<-66.666
+prop<-50
   
-R0.assumed<-3.75
+R0.assumed<-5.625
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
@@ -52,9 +52,9 @@ b1<-uniroot(R0.search,c(0,200),vr=vir.obs,b2=b2,tol=1e-10)$root
 
 #check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
 
-#vs<-seq(0,.02,.00001)
+#vs<-seq(.005,.05,.00001)
 #rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
-#plot(vs,rs,ylim=c(3.74,3.76),xlab=expression(alpha),ylab=expression(R[0]))
+#plot(vs,rs,ylim=c(5.62,5.63),xlab=expression(alpha),ylab=expression(R[0]))
 #abline(v=optim.vir.assumed)
 #abline(h=max(rs))
 #abline(v=vir.obs)
@@ -94,12 +94,15 @@ par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
 #### analysis
 
-rUc.fix<-.5 #convalescent class
-rLc.fix<-.75 #convalescent class
+rUc.fix<-.7 #convalescent class
+rLc.fix<-.9 #convalescent class
+
+virulence.steps<-seq(.0025,.04,.0001)
+times<-seq(0,2000,.01)
 
 ### optim vir = 2 * alpha [b.1.1.7]
 
-optim.vir.assumed<-.0075*2 #set to either .005, .01, .0025
+optim.vir.assumed<-.00875 #set to either .00875, .01, .02
 color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
 
 rU<-.0 #vaccinated class
@@ -115,30 +118,33 @@ rUc<-rUc.fix
 rLc<-rLc.fix
 
 # 10% vacc
+if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS"))
 {
-  get.states(p.C=.25,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
+  get.states(p.C=.25,p.I=.001,p.vacc=.1)
+  plot.mat.RE<-matrix(NA,res,res) #build matrix to populate
+  RE.res.vec<-c()
+  R0.inv.vec<-c()
   for (rUx in seq(0,1,length.out = res))
   {
     for (rLx in seq(0,1,length.out = res))
     {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
+      for(v1 in virulence.steps)
+      {
+        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v1,prop=prop)
+        out1 <- ode(states, times=times, func = "derivs", parms = parameters,
+                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+        get.matricies(out1)
+        R0.obs<-getR0(Fmat,Vmat)
+        
+        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
+        out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
+                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+        get.matricies(out2)
+        R0.mutant<-getR0(Fmat,Vmat)
+        
+        R0.obs.vec<-c(R0.obs.vec,R0.obs)
+        R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
+      }
     }
   }
   
