@@ -63,32 +63,32 @@ ydot[5] = y[7] * (1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(al
 
 /* C */
   
-ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
+ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
 
 /* C_V */
 
-ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
+ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
 
 
 /* output for Fmat */
   
 yout[0] = y[0]*betafunc(alpha,0,0,epsilon);
-yout[1] = y[0]*betafunc(alpha,rUv,rLc,epsilon);
+yout[1] = y[0]*betafunc(alpha,rUv,rLv,epsilon);
 yout[2] = y[0]*betafunc(alpha,rUc,rLc,epsilon);
 yout[3] = y[0]*betafunc(alpha,rUcv,rLcv,epsilon);
 
 yout[4] = y[1]*(1-rUv)*betafunc(alpha,0,0,epsilon);
-yout[5] = y[1]*(1-rUv)*betafunc(alpha,rUv,rLc,epsilon);
+yout[5] = y[1]*(1-rUv)*betafunc(alpha,rUv,rLv,epsilon);
 yout[6] = y[1]*(1-rUv)*betafunc(alpha,rUc,rLc,epsilon);
 yout[7] = y[1]*(1-rUv)*betafunc(alpha,rUcv,rLcv,epsilon);
 
 yout[8] = y[6]*(1-rUc)*betafunc(alpha,0,0,epsilon);
-yout[9] = y[6]*(1-rUc)*betafunc(alpha,rUv,rLc,epsilon);
+yout[9] = y[6]*(1-rUc)*betafunc(alpha,rUv,rLv,epsilon);
 yout[10] = y[6]*(1-rUc)*betafunc(alpha,rUc,rLc,epsilon);
 yout[11] = y[6]*(1-rUc)*betafunc(alpha,rUcv,rLcv,epsilon);
 
 yout[12] = y[7]*(1-rUcv)*betafunc(alpha,0,0,epsilon);
-yout[13] = y[7]*(1-rUcv)*betafunc(alpha,rUv,rLc,epsilon);
+yout[13] = y[7]*(1-rUcv)*betafunc(alpha,rUv,rLv,epsilon);
 yout[14] = y[7]*(1-rUcv)*betafunc(alpha,rUc,rLc,epsilon);
 yout[15] = y[7]*(1-rUcv)*betafunc(alpha,rUcv,rLcv,epsilon);
 
