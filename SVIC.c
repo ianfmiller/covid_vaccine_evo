@@ -1,7 +1,7 @@
 /* file sirmodess.c */
 #include <R.h>
 #include <math.h>
-static double parms[14];
+static double parms[16];
 #define b1 parms[0]
 #define b2 parms[1]
 #define gamma parms[2]
@@ -9,15 +9,15 @@ static double parms[14];
 #define rLv parms[4]
 #define rUc parms[5]
 #define rLc parms[6]
-#define rUcv parms[5]
-#define rLcv parms[6]
-#define epsilon parms[7]
-#define alpha parms[8]
-#define p parms[9]
-#define omega parms[10]
-#define omegav parms[11]
-#define mu parms[12]
-#define f parms[13]
+#define rUcv parms[7]
+#define rLcv parms[8]
+#define epsilon parms[9]
+#define alpha parms[10]
+#define p parms[11]
+#define omega parms[12]
+#define omegav parms[13]
+#define mu parms[14]
+#define f parms[15]
 
 
 double betafunc (double virulence, double rU_effect, double rL_effect, double epsilon_effect) {
@@ -29,7 +29,7 @@ return result;
 /* initializer */
 void initmod(void (* odeparms)(int *, double *))
 {
-  int N=14;
+  int N=16;
   odeparms(&N, parms);
 }
 
