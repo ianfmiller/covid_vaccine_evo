@@ -8,56 +8,59 @@ library(plotrix)
 system("R CMD SHLIB SVIC.c")
 dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
-#### define model parameters
+#### define model parameters fo rsetting b1 and b2
 
-gamma<-1/7
-
-optim.vir.assumed<-.01 #set to either .00875, .01, .02
-
-vir.obs<-.01
-
-prop<-50
-  
-R0.assumed<-5.625
-
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
+rUv<-.0 #vaccinated class
+rLv<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
+rUcv<-0 #vaccinated + convalescent class
+rLcv<-0 #vaccinated + convalescent class
 
-frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
+gamma<-1/7
+epsilon<-.5
+p<-50
+omega<-0
+omegav<-0
+mu<-1/(73*365)
+f<-0
+
+optim.alpha.assumed<-.01 #set to either .00875, .01, .02
+alpha.obs<-.01
+
+R0.assumed<-5.625
 
 
 ### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
 
 ## set trade-off shape (b2 only) according to assumed ES virulence
 
-get.states(0,0,0)
+get.states(0,0,0,0)
 
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
 
 ## set trade-off scaling (b1) so that R0=2.5 at vir.obs
 
-b1<-uniroot(R0.search,c(0,200),vr=vir.obs,b2=b2,tol=1e-10)$root
+b1<-uniroot(R0.search,c(0,200),vr=alpha.obs,b2=b2,tol=1e-10)$root
 
 ## checks for setting b1 and b2
 
 #check to ensure that fit b2 is effectively independent of b1
-#uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=2,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=3,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
+#uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
+#uniroot(b2.search,c(0,1),b1=2,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
+#uniroot(b2.search,c(0,1),b1=3,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
 
 #check to ensure that b1 and b2 give desired R0 at vir.obs
-#find.R0(vir.obs,b1,b2)
+#find.R0(alpha.obs,b1,b2)
 
 #check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
 
 #vs<-seq(.005,.05,.00001)
 #rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
 #plot(vs,rs,ylim=c(5.62,5.63),xlab=expression(alpha),ylab=expression(R[0]))
-#abline(v=optim.vir.assumed)
+#abline(v=optim.alpha.assumed)
 #abline(h=max(rs))
-#abline(v=vir.obs)
+#abline(v=alpha.obs)
 #abline(h=R0.assumed)
 
 
@@ -124,13 +127,13 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
   plot.mat.RE<-matrix(NA,res,res) #build matrix to populate
   RE.res.vec<-c()
   R0.inv.vec<-c()
-  for (rUx in seq(0,1,length.out = res))
+  for (rUv in seq(0,1,length.out = res))
   {
-    for (rLx in seq(0,1,length.out = res))
+    for (rLv in seq(0,1,length.out = res))
     {
-      for(v1 in virulence.steps)
+      for(alpha1 in virulence.steps)
       {
-        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=v1,prop=prop)
+        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
         out1 <- ode(states, times=times, func = "derivs", parms = parameters,
                     dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
         get.matricies(out1)
