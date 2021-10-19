@@ -63,11 +63,11 @@ ydot[5] = y[7] * (1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(al
 
 /* C */
   
-ydot[6] = gamma * (y[2] +  y[4]) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
+ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
 
 /* C_V */
 
-ydot[7] = gamma * (y[3] +  y[5]) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
+ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLc,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
 
 
 /* output for Fmat */
