@@ -1,72 +1,14 @@
-#### set up
-source("covid_SVIC_functions.R")
+# set up
 
+## load packages,functions,  model
 library(deSolve)
 library(rootSolve)
 library(plotrix)
-
+source("covid_SVIC_functions.R")
 system("R CMD SHLIB SVIC.c")
 dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
-#### define model parameters fo rsetting b1 and b2
-
-rUv<-.0 #vaccinated class
-rLv<-0 #vaccinated class
-rUc<-0 #convalescent class
-rLc<-0 #convalescent class
-rUcv<-0 #vaccinated + convalescent class
-rLcv<-0 #vaccinated + convalescent class
-
-gamma<-1/7
-epsilon<-.5
-p<-50
-omega<-0
-omegav<-0
-mu<-1/(73*365)
-f<-0
-
-optim.alpha.assumed<-.01 #set to either .00875, .01, .02
-alpha.obs<-.01
-
-R0.assumed<-5.625
-
-
-### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
-
-## set trade-off shape (b2 only) according to assumed ES virulence
-
-get.states(0,0,0,0)
-
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
-
-## set trade-off scaling (b1) so that R0=2.5 at vir.obs
-
-b1<-uniroot(R0.search,c(0,200),vr=alpha.obs,b2=b2,tol=1e-10)$root
-
-## checks for setting b1 and b2
-
-#check to ensure that fit b2 is effectively independent of b1
-#uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=2,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=3,optim.alpha.assumed=optim.alpha.assumed,tol=1e-10)$root
-
-#check to ensure that b1 and b2 give desired R0 at vir.obs
-#find.R0(alpha.obs,b1,b2)
-
-#check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
-
-#vs<-seq(.005,.05,.00001)
-#rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
-#plot(vs,rs,ylim=c(5.62,5.63),xlab=expression(alpha),ylab=expression(R[0]))
-#abline(v=optim.alpha.assumed)
-#abline(h=max(rs))
-#abline(v=alpha.obs)
-#abline(h=R0.assumed)
-
-
-#### calculate selection coefficient for combinations of rL and rU
-
-### plotting tools
+## plotting tools
 
 col.trans<-.6
 
@@ -88,77 +30,125 @@ s.col.vals3<-seq(-7.5,7.5,length.out = 401)
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
-res<-101
+res<-21
 
-### set plot window
+## set plot window
 
-layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
-par(mar=c(2,2,2,2),oma=c(4,8,4,0))
+#layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
+#par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 
-#### analysis
+# analysis
 
-rUc.fix<-.7 #convalescent class
-rLc.fix<-.9 #convalescent class
+## set global parameters
 
-virulence.steps<-seq(.0025,.04,.0001)
-times<-seq(0,2000,.01)
+color.index<-1 #index to match colors and color values to right analysis
 
-### optim vir = 2 * alpha [b.1.1.7]
+virulence.steps<-seq(.003,.35,.005)
+times<-seq(0,365*100,1)
+         
+gamma<-1/7
+epsilon<-.5
+p<-50
+mu<-1/(73*365)
 
-optim.vir.assumed<-.00875 #set to either .00875, .01, .02
-color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
+## 1st scenario
 
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
+### set scenario parameters
+
+omega<-1/(100*365)
+omegav<-1/(100*365)
+f<-1
+
+### set b1, b2
+
+optim.alpha.assumed<-.00875 #set to either .00875, .01, .02
+alpha.obs<-.01
+R0.assumed<-5.625
+
+
+rUv<-0 #vaccinated class
+rLv<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
+rUcv<-0 #vaccinated + convalescent class
+rLcv<-0 #vaccinated + convalescent class
 
-get.states(0,0,0)
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,200),vr=vir.obs,b2=b2,tol=1e-10)$root
+get.states(0,0,0,0)
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
+b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 
-rUc<-rUc.fix
-rLc<-rLc.fix
+### set scenario parameters
 
-# 10% vacc
+rUc<-.8 #convalescent class
+rLc<-.95 #convalescent class
+rUcv<-.99 #vaccinated + convalescent class
+rLcv<-.99 #vaccinated + convalescent class
+start.states<-get.states(.25,.1,.01,.5) # set startinng conditions
+
 if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS"))
 {
-  get.states(p.C=.25,p.I=.001,p.vacc=.1)
-  plot.mat.RE<-matrix(NA,res,res) #build matrix to populate
-  RE.res.vec<-c()
-  R0.inv.vec<-c()
+  virulence.steps.mod<-seq(.05,.09,.001)
+  data<-list()
+  
+  index<-1
+  
   for (rUv in seq(0,1,length.out = res))
   {
     for (rLv in seq(0,1,length.out = res))
     {
+      RE.invader.vec<-c() #build empty vector of RE values for invader strain
       for(alpha1 in virulence.steps)
       {
-        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
-        out1 <- ode(states, times=times, func = "derivs", parms = parameters,
-                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-        get.matricies(out1)
-        R0.obs<-getR0(Fmat,Vmat)
+        states<-start.states
         
-        parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=1.5*vir.obs,prop=prop)
-        out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                    dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
+        parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+        get.matricies(out0)
+        Re.alpha.delta.start<-getR0(Fmat,Vmat)
+        
+        parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "radau")
+        epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
+        
+        out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
         get.matricies(out2)
-        R0.mutant<-getR0(Fmat,Vmat)
+        Re.alpha.delta.epi.equi<-getR0(Fmat,Vmat)
         
-        R0.obs.vec<-c(R0.obs.vec,R0.obs)
-        R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
+        for (alpha2 in virulence.steps)
+        {          
+          parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+          out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+          get.matricies(out3)
+          RE.invader<-getR0(Fmat,Vmat)
+          RE.invader.vec<-c(RE.invader.vec,RE.invader)
+        }
+        print(paste0("finished alpha1 = ",alpha1))
       }
+      RE.invader.mat<-matrix(RE.invader.vec,length(virulence.steps),length(virulence.steps),byrow = T)
+      colnames(RE.invader.mat)<-virulence.steps
+      rownames(RE.invader.mat)<-virulence.steps
+      image(RE.invader.mat>=1)
+      ess.result<-ess.analysis(RE.invader.mat)
+      data[[index]]<-c(
+                     "rUv"=rUv,
+                     "rLv"=rLv,
+                     "Re.alpha.delta.start"=Re.alpha.delta.start,
+                     "Re.alpha.delta.epi.equi"=Re.alpha.delta.epi.equi,
+                     "pip.motif"=na.omit(ess.result[c(1,3,4)]),
+                     "alpha.ess"=ess.result[2]
+                   )
+      index<-index+1
+      print(paste0("finished index = ",index))
     }
   }
   
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
+  #plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  #plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
+  #.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
+  #plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
+  #contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
   #mtext(expression('r'[L]),side = 2,line=2.5)
-  mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = 2*'*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
+  #mtext("10% vaccinated",line=2,cex=1.25)
 }
 
 # 50% vacc
