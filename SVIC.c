@@ -37,29 +37,35 @@ void initmod(void (* odeparms)(int *, double *))
 void derivs (int *neq, double *t, double *y, double *ydot,double *yout, double *out, int *ip)
 {
 
+double foi;
+double N;
+
+foi = (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon));
+N = y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7];
+  
 /* S */
   
-ydot[0] = -y[0] * ((y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) + mu) + y[6]*omega + y[7]*omegav + y[1]*omegav + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*(1-f);
+ydot[0] = -y[0] * (foi + mu) + y[6]*omega + y[7]*omegav + y[1]*omegav + N*mu*(1-f);
 
 /* V */
   
-ydot[1] =  -y[1] * (((1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + mu + omegav) + (y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7])*mu*f;
+ydot[1] =  -y[1] * (((1-rUv) * foi) + mu + omegav) + N*mu*f;
 
 /* I_0 */
  
-ydot[2] = y[0] * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + alpha*p + mu) * y[2];
+ydot[2] = y[0] * foi - (gamma + alpha*p + mu) * y[2];
 
 /* I_V */
   
-ydot[3] = y[1] * (1-rUv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLv)*alpha*p + mu) * y[3];
+ydot[3] = y[1] * (1-rUv) * foi - (gamma + (1-rLv)*alpha*p + mu) * y[3];
 
 /* I_C */
 
-ydot[4] = y[6] * (1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLc)*alpha*p + mu) * y[4];
+ydot[4] = y[6] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p + mu) * y[4];
 
 /* I_C_V */
 
-ydot[5] = y[7] * (1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon)) - (gamma + (1-rLcv)*alpha*p + mu) * y[5];
+ydot[5] = y[7] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p + mu) * y[5];
 
 /* C */
   
@@ -101,7 +107,7 @@ yout[18] = 0;
 yout[19] = 0;
 
 yout[20] = 0;
-yout[21] = gamma + alpha*p*(1-rLc) + mu;
+yout[21] = gamma + alpha*p*(1-rLv) + mu;
 yout[22] = 0;
 yout[23] = 0;
 
@@ -113,8 +119,8 @@ yout[27] = 0;
 yout[28] = 0;
 yout[29] = 0;
 yout[30] = 0;
-yout[31] = gamma + alpha*p*(1-rLc) + mu;
- 
+yout[31] = gamma + alpha*p*(1-rLcv) + mu;
+
 }
 
 /* END file mymod.c */
