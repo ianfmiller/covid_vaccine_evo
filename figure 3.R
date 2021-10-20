@@ -97,7 +97,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
     for (rLv in seq(0,1,length.out = res))
     {
       RE.invader.vec<-c() #build empty vector of RE values for invader strain
-      for(alpha1 in virulence.steps)
+      for(alpha1 in virulence.steps.mod)
       {
         states<-start.states
         
@@ -114,7 +114,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
         get.matricies(out2)
         Re.alpha.delta.epi.equi<-getR0(Fmat,Vmat)
         
-        for (alpha2 in virulence.steps)
+        for (alpha2 in virulence.steps.mod)
         {          
           parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
           out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
@@ -141,15 +141,16 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
       print(paste0("finished index = ",index))
     }
   }
-  
-  #plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  #plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  #.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  #plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
-  #contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
-  #mtext(expression('r'[L]),side = 2,line=2.5)
-  #mtext("10% vaccinated",line=2,cex=1.25)
+  saveRDS(data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS")
 }
+
+#plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+#plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
+#.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
+#plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
+#contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
+#mtext(expression('r'[L]),side = 2,line=2.5)
+#mtext("10% vaccinated",line=2,cex=1.25)
 
 # 50% vacc
 {
