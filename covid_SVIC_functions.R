@@ -163,6 +163,30 @@ plot.simulation<-function(output,legend=T)
   }
 }
 
+ess.analysis<-function(mat)
+{
+  output<-rep(NA,length.out=4)
+  mod.mat<-matrix(NA,dim(mat)[1],dim(mat)[2])
+  colnames(mod.mat)<-colnames(mat)
+  rownames(mod.mat)<-rownames(mat)
+  for(j in 1:dim(mod.mat)[1]) {
+    for(k in 1:dim(mod.mat)[1]) {
+      mod.mat[j,k] <- 1*(mat[j,k]>=1)
+    }}
+  
+  row.max<-which.max(rowSums(mod.mat))
+  row.min<-which.min(rowSums(mod.mat))
+  
+  col.max<-which.max(colSums(mod.mat))
+  col.min<-which.min(colSums(mod.mat))
+  
+  if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-virulence.steps[col.max]}}
+  if (isFALSE(any(diff(colSums(mod.mat))<0)) && any(mod.mat>0)) {output[3]<-"selection for hypervirulence"}
+  if (!any(diag(mod.mat)==1)) {output[4]<-"global eradication"}
+  
+  return(output)
+}
+
 
 
 
