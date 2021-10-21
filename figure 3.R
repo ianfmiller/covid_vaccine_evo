@@ -49,14 +49,15 @@ times<-seq(0,365*100,1)
 gamma<-1/7
 epsilon<-.5
 p<-50
-mu<-1/(73*365)
+#mu<-1/(73*365)
+mu<-0
 
 ## 1st scenario
 
 ### set scenario parameters
 
-omega<-1/(100*365)
-omegav<-1/(100*365)
+omega<-1/(10*365)
+omegav<-1/(10*365)
 f<-1
 
 ### set b1, b2
@@ -137,8 +138,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
                      "pip.motif"=na.omit(ess.result[c(1,3,4)]),
                      "alpha.ess"=ess.result[2]
                    )
-      index<-index+1
       print(paste0("finished index = ",index))
+      index<-index+1
     }
   }
   saveRDS(data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS")
