@@ -163,26 +163,151 @@ plot.simulation<-function(output,legend=T)
   }
 }
 
-ess.analysis<-function(mat)
+### Scans vector from start to finish to find 1st local maximum
+find.peak<-function(x)
 {
-  output<-rep(NA,length.out=4)
+  peak.index<-NA
+  for (z in 4:(length(x)-3)) 
+  {
+    if (x[z] >= x[z-1] && x[z] >= x[z-2] && x[z] > x[z-3] && x[z] >= x[z+1] && x[z] >= x[z+2] && x[z] > x[z+3]) {peak.index<-z;break}
+  }
+  return(peak.index)
+}
+
+### Used to find virulence strategy with fitness equal to that of local optimum 
+find.break.even.point<-function(x,peak.index)
+{
+  break.even.point<-NA
+  for (z in (peak.index+1):(length(x)))
+  {
+    if (x[z] >= x[peak.index]) {break.even.point<-z; break}
+  }
+  return(break.even.point)
+}
+
+pip.analysis<-function(mat)
+{
+  output<-rep(NA,length.out=13)
+  if(colnames(mat)[1]=="X") {mat<-mat[,-1]}
   mod.mat<-matrix(NA,dim(mat)[1],dim(mat)[2])
   colnames(mod.mat)<-colnames(mat)
   rownames(mod.mat)<-rownames(mat)
   for(j in 1:dim(mod.mat)[1]) {
     for(k in 1:dim(mod.mat)[1]) {
-      mod.mat[j,k] <- 1*(mat[j,k]>=1)
+      mod.mat[j,k] <- 1*(mat[j,k]>1)
     }}
   
-  row.max<-which.max(rowSums(mod.mat))
-  row.min<-which.min(rowSums(mod.mat))
+  row.max<-find.peak(rowSums(mod.mat))
+  row.min<-find.peak(-1*rowSums(mod.mat))
   
-  col.max<-which.max(colSums(mod.mat))
-  col.min<-which.min(colSums(mod.mat))
+  col.max<-find.peak(colSums(mod.mat))
+  col.min<-find.peak(-1*colSums(mod.mat))
   
   if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-virulence.steps[col.max]}}
-  if (isFALSE(any(diff(colSums(mod.mat))<0)) && any(mod.mat>0)) {output[3]<-"selection for hypervirulence"}
-  if (!any(diag(mod.mat)==1)) {output[4]<-"global eradication"}
+  if (is.numeric(col.min)&&is.numeric(row.max)) {if(col.min-row.max<=1) {output[3]<-"REPELLER"; output[4]<-virulence.steps[row.max]}}
+  
+  if(isTRUE(as.numeric(output[2])>0)) #used to check for repeller point and get eradication bounds
+  {
+    up.sub.mat.cols<-which(virulence.steps>max(as.numeric(output[2],output[4])))
+    up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
+    up.sub.mat.col.sums<-colSums(up.sub.mat)
+    
+    if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
+    {
+      upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+      lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+      if(upper.bound<dim(mat)[1] && is.na(output[3]))
+      {
+        output[3]<-"REPELLER2"
+        output[4]<-virulence.steps[upper.bound+1]
+        output[10]<-"mid.erad.lower"
+        output[11]<-virulence.steps[lower.bound]
+        output[12]<-"mid.erad.upper"
+        output[13]<-virulence.steps[upper.bound]
+        
+      }
+      
+      if(upper.bound==dim(mat)[1])
+      {
+        output[6]<-"upper.erad"
+        output[7]<-virulence.steps[lower.bound]
+      }
+    }
+    
+    low.sub.mat.cols<-which(virulence.steps<output[2])
+    low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
+    low.sub.mat.col.sums<-colSums(low.sub.mat)
+    
+    if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
+    {
+      upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+      lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+      
+      if(lower.bound==1)
+      {
+        output[8]<-"lower.erad"
+        output[9]<-virulence.steps[upper.bound]
+      }
+    }
+  }
+  
+  
+  if (isFALSE(any(diff(colSums(mod.mat))<0)) && any(mod.mat>0)) 
+  {
+    output[5]<-"selection for hypervirulence"
+    if(length(which(colSums(mod.mat)==min(colSums(mod.mat))))>2)
+    {
+      output[8]<-"lower.erad"
+      output[9]<-virulence.steps[max(which(colSums(mod.mat)==min(colSums(mod.mat))))]
+    }
+  }
+  
+  
+  if (isFALSE(any(diff(colSums(mod.mat))>0)) && any(mod.mat>0)) {output[5]<-"selection for 0 virulence"}
+  
+  if (!any(is.na(output)==F)) #this loop is for when theres a region around the ESS where nothing can invade. This is due to numerical errors
+  {
+    intersect(which(colSums(mod.mat)==max(colSums(mod.mat))),which(rowSums(mod.mat)==min(rowSums(mod.mat))))->overlap
+    if (length(overlap)>0)
+    {
+      output[1]<-"ESS"
+      output[2]<-mean(virulence.steps[overlap])
+      { #get erad bounds
+        up.sub.mat.cols<-which(virulence.steps>max(as.numeric(output[2],output[4])))
+        up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
+        up.sub.mat.col.sums<-colSums(up.sub.mat)
+        
+        if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
+        {
+          upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+          lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+          if(upper.bound==dim(mat)[1])
+          {
+            output[6]<-"upper.erad"
+            output[7]<-virulence.steps[lower.bound]
+          }
+        }
+        
+        low.sub.mat.cols<-which(virulence.steps<output[2])
+        low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
+        low.sub.mat.col.sums<-colSums(low.sub.mat)
+        
+        if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
+        {
+          upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+          lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+          
+          if(lower.bound==1)
+          {
+            output[8]<-"lower.erad"
+            output[9]<-virulence.steps[upper.bound]
+          }
+        }
+      }
+    }
+  }
+  
+  if (is.na(output[5]) && is.na(col.max) && is.na(col.min) && is.na(row.max) && is.na(row.min)) {output[5]<-"global eradication"}
   
   return(output)
 }

@@ -4,6 +4,10 @@
 library(deSolve)
 library(rootSolve)
 library(plotrix)
+library(parallel)
+library(doParallel)
+library(foreach)
+library(doRNG)
 source("covid_SVIC_functions.R")
 system("R CMD SHLIB SVIC.c")
 dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
@@ -30,7 +34,7 @@ s.col.vals3<-seq(-7.5,7.5,length.out = 401)
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
-res<-21
+res<-4
 
 ## set plot window
 
@@ -42,9 +46,7 @@ res<-21
 ## set global parameters
 
 color.index<-1 #index to match colors and color values to right analysis
-
-virulence.steps<-seq(.003,.35,.005)
-times<-seq(0,365*100,1)
+times<-seq(0,365*100,.5)
          
 gamma<-1/7
 epsilon<-.5
@@ -80,44 +82,44 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 
 ### set scenario parameters
 
-rUc<-.8 #convalescent class
+rUc<-.75 #convalescent class
 rLc<-.95 #convalescent class
-rUcv<-.99 #vaccinated + convalescent class
-rLcv<-.99 #vaccinated + convalescent class
-start.states<-get.states(.25,.1,.01,.5) # set startinng conditions
+
+start.states<-get.states(.25,.1,.001,.5) # set startinng conditions
+
+virulence.steps<-seq(.003,.1,.001)
 
 if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS"))
 {
-  virulence.steps.mod<-seq(.05,.09,.001)
   data<-list()
   
   index<-1
   
-  for (rUv in seq(0,1,length.out = res))
+  for (rUv in seq(.5,1,length.out = res))
   {
-    for (rLv in seq(0,1,length.out = res))
+    for (rLv in seq(.5,1,length.out = res))
     {
       RE.invader.vec<-c() #build empty vector of RE values for invader strain
-      for(alpha1 in virulence.steps.mod)
+      for(alpha1 in virulence.steps)
       {
         states<-start.states
         
-        parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
-        out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+        parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
         get.matricies(out0)
         Re.alpha.delta.start<-getR0(Fmat,Vmat)
         
-        parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
-        out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "radau")
+        parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
         epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
         
-        out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+        out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
         get.matricies(out2)
         Re.alpha.delta.epi.equi<-getR0(Fmat,Vmat)
         
-        for (alpha2 in virulence.steps.mod)
+        for (alpha2 in virulence.steps)
         {          
-          parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+          parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
           out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
           get.matricies(out3)
           RE.invader<-getR0(Fmat,Vmat)
@@ -125,17 +127,17 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
         }
         print(paste0("finished alpha1 = ",alpha1))
       }
-      RE.invader.mat<-matrix(RE.invader.vec,length(virulence.steps.mod),length(virulence.steps.mod),byrow = T)
-      colnames(RE.invader.mat)<-virulence.steps.mod
-      rownames(RE.invader.mat)<-virulence.steps.mod
+      RE.invader.mat<-matrix(RE.invader.vec,length(virulence.steps),length(virulence.steps),byrow = T)
+      colnames(RE.invader.mat)<-virulence.steps
+      rownames(RE.invader.mat)<-virulence.steps
       image(RE.invader.mat>=1)
-      ess.result<-ess.analysis(RE.invader.mat)
+      ess.result<-pip.analysis(RE.invader.mat)
       data[[index]]<-c(
                      "rUv"=rUv,
                      "rLv"=rLv,
                      "Re.alpha.delta.start"=Re.alpha.delta.start,
                      "Re.alpha.delta.epi.equi"=Re.alpha.delta.epi.equi,
-                     "pip.motif"=na.omit(ess.result[c(1,3,4)]),
+                     "pip.motif"=paste0(na.omit(ess.result[c(1,3,5)])),
                      "alpha.ess"=ess.result[2]
                    )
       print(paste0("finished index = ",index))
@@ -144,6 +146,62 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
   }
   saveRDS(data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS")
 }
+
+
+do.ess.sim<-function(rUv,rLv)
+{
+  RE.invader.vec<-c() #build empty vector of RE values for invader strain
+  for(alpha1 in virulence.steps)
+  {
+    states<-start.states
+    
+    parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+    out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
+    get.matricies(out0)
+    Re.alpha.delta.start<-getR0(Fmat,Vmat)
+    
+    parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+    out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
+    epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
+    
+    out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
+    get.matricies(out2)
+    Re.alpha.delta.epi.equi<-getR0(Fmat,Vmat)
+    
+    for (alpha2 in virulence.steps)
+    {          
+      parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+      out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+      get.matricies(out3)
+      RE.invader<-getR0(Fmat,Vmat)
+      RE.invader.vec<-c(RE.invader.vec,RE.invader)
+    }
+    print(paste0("finished alpha1 = ",alpha1))
+  }
+  RE.invader.mat<-matrix(RE.invader.vec,length(virulence.steps),length(virulence.steps),byrow = T)
+  colnames(RE.invader.mat)<-virulence.steps
+  rownames(RE.invader.mat)<-virulence.steps
+  image(RE.invader.mat>=1)
+  ess.result<-pip.analysis(RE.invader.mat)
+  data.frame(
+    "rUv"=rUv,
+    "rLv"=rLv,
+    "Re.alpha.delta.start"=Re.alpha.delta.start,
+    "Re.alpha.delta.epi.equi"=Re.alpha.delta.epi.equi,
+    "pip.motif"=paste0(na.omit(ess.result[c(1,3,5)])),
+    "alpha.ess"=ess.result[2]
+  )
+}
+
+library(parallel)
+library(doParallel)
+library(foreach)
+library(doRNG)
+
+n.cores<-detectCores()
+registerDoParallel(n.cores)
+test.vals<-data.frame("rUv"=rep(seq(.5,1,length.out = res),each=5),"rLv"=rep(seq(.5,1,length.out = res),times=5))
+out.data<-foreach(k = 1:25, .multicombine = T, .options.RNG=2389572) %dorng% do.ess.sim(test.vals[k,"rUv"],test.vals[k,"rLv"])
 
 #plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
 #plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
