@@ -33,9 +33,6 @@ s.col.vals3<-seq(-7.5,7.5,length.out = 401)
 
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
-
-res<-4
-
 ## set plot window
 
 #layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
@@ -51,6 +48,9 @@ times<-seq(0,365*100,1)
 gamma<-1/7
 epsilon<-.5
 p<-50
+
+res<-21
+rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
 ## 1st scenario
 
@@ -92,9 +92,9 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
   
   index<-1
   
-  for (rUv in seq(.5,1,length.out = res))
+  for (rUv in rUv.steps)
   {
-    for (rLv in seq(.5,1,length.out = res))
+    for (rLv in rLv.steps)
     {
       RE.invader.vec<-c() #build empty vector of RE values for invader strain
       for(alpha1 in virulence.steps)
@@ -144,6 +144,13 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
   saveRDS(data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS")
 }
 
+data2<-data.frame(rUv=numeric(),rLv=numeric(),Re.alpha.delta.start=numeric(),Re.alpha.delta.epi.equi=numeric(),pip.motif=numeric(),alpha.ess=numeric())
+for(i in 1:length(data))
+{
+  data2<-rbind(data2,data.frame(rUv=data[[i]]["rUv"],rLv=data[[i]]["rLv"],Re.alpha.delta.start=data[[i]]["Re.alpha.delta.start"],Re.alpha.delta.epi.equi=data[[i]]["Re.alpha.delta.epi.equi"],pip.motif=data[[i]]["pip.motif"],alpha.ess=data[[i]]["alpha.ess"]))
+}
+
+plot.mat.alpha.ess<-matrix(as.numeric(data2$alpha.ess),res,res,byrow = T)
 
 do.ess.sim<-function(rUv,rLv)
 {
@@ -197,16 +204,14 @@ library(doRNG)
 
 n.cores<-detectCores()
 registerDoParallel(n.cores)
-test.vals<-data.frame("rUv"=rep(seq(.5,1,length.out = res),each=5),"rLv"=rep(seq(.5,1,length.out = res),times=5))
-out.data<-foreach(k = 1:25, .multicombine = T, .options.RNG=2389572) %dorng% do.ess.sim(test.vals[k,"rUv"],test.vals[k,"rLv"])
+test.vals<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
+out.data<-foreach(k = 1:res^2, .multicombine = T, .combine = cbind) %dopar% do.ess.sim(test.vals[k,"rUv"],test.vals[k,"rLv"])
 
-#plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-#plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-#.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-#plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
-#contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
-#mtext(expression('r'[L]),side = 2,line=2.5)
-#mtext("10% vaccinated",line=2,cex=1.25)
+plot.mat.R0.obs<-matrix(data2$Re.alpha.delta.epi.equi,res,res,byrow = T) #populate matricies
+plot.s(plot.mat.R0.obs,s.colors[[color.index]],s.col.vals[[color.index]])
+contour(plot.mat.R0.mutant-plot.mat.R0.obs,add=T)
+mtext(expression('r'[L]),side = 2,line=2.5)
+mtext("10% vaccinated",line=2,cex=1.25)
 
 # 50% vacc
 {
@@ -237,7 +242,7 @@ out.data<-foreach(k = 1:25, .multicombine = T, .options.RNG=2389572) %dorng% do.
     }
   }
   
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
+  plot.mat.alpha.ess<-matrix(,res,res,byrow = T) #populate matricies
   plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
   s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
   plot.s(s.mat,s.colors[[color.index]],s.col.vals[[color.index]])
