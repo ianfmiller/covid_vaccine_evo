@@ -108,7 +108,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
-  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
+  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
   saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.vacc0.1alpha.optim0.00875.RDS")
 }
 
