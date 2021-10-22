@@ -97,8 +97,8 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 
 ### set more scenario parameters
 
-rUc<-.75 #convalescent class
-rLc<-.95 #convalescent class
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 start.states<-get.states(.25,.1,.001,.5) # set startinng conditions
 
 ### do analysis
