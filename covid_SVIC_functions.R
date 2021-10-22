@@ -45,7 +45,7 @@ get.states<-function(p.C, p.C_V, p.I, p.V) #set initial conditions
 
 find.R0<-function(alpha,b1,b2) # get R0 given vr, b1, b2
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                  dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
   get.matricies(new.out)
@@ -73,7 +73,7 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b
   R0s<-c()
   for(alpha in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                    dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
     get.matricies(new.out)
