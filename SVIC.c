@@ -1,7 +1,7 @@
 /* file sirmodess.c */
 #include <R.h>
 #include <math.h>
-static double parms[16];
+static double parms[14];
 #define b1 parms[0]
 #define b2 parms[1]
 #define gamma parms[2]
@@ -16,8 +16,6 @@ static double parms[16];
 #define p parms[11]
 #define omega parms[12]
 #define omegav parms[13]
-#define mu parms[14]
-#define f parms[15]
 
 
 double betafunc (double virulence, double rU_effect, double rL_effect, double epsilon_effect) {
@@ -29,7 +27,7 @@ return result;
 /* initializer */
 void initmod(void (* odeparms)(int *, double *))
 {
-  int N=16;
+  int N=14;
   odeparms(&N, parms);
 }
 
@@ -38,42 +36,40 @@ void derivs (int *neq, double *t, double *y, double *ydot,double *yout, double *
 {
 
 double foi;
-double N;
 
 foi = (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon) + y[5]*betafunc(alpha,rUcv,rLcv,epsilon));
-N = y[0]+y[1]+y[2]+y[3]+y[4]+y[5]+y[6]+y[7];
-  
+
 /* S */
   
-ydot[0] = -y[0] * (foi + mu) + y[6]*omega + y[7]*omegav + y[1]*omegav + N*mu*(1-f);
+ydot[0] = -y[0] * foi  + y[6]*omega + y[7]*omegav + y[1]*omegav;
 
 /* V */
   
-ydot[1] =  -y[1] * (((1-rUv) * foi) + mu + omegav) + N*mu*f;
+ydot[1] =  -y[1] * (((1-rUv) * foi) + omegav);
 
 /* I_0 */
  
-ydot[2] = y[0] * foi - (gamma + alpha*p + mu) * y[2];
+ydot[2] = y[0] * foi - (gamma + alpha*p) * y[2];
 
 /* I_V */
   
-ydot[3] = y[1] * (1-rUv) * foi - (gamma + (1-rLv)*alpha*p + mu) * y[3];
+ydot[3] = y[1] * (1-rUv) * foi - (gamma + (1-rLv)*alpha*p) * y[3];
 
 /* I_C */
 
-ydot[4] = y[6] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p + mu) * y[4];
+ydot[4] = y[6] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p) * y[4];
 
 /* I_C_V */
 
-ydot[5] = y[7] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p + mu) * y[5];
+ydot[5] = y[7] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p) * y[5];
 
 /* C */
   
-ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega + mu);
+ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
 
 /* C_V */
 
-ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav + mu);
+ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
 
 
 /* output for Fmat */
@@ -101,25 +97,25 @@ yout[15] = y[7]*(1-rUcv)*betafunc(alpha,rUcv,rLcv,epsilon);
   
  /* output for Vmat */
   
-yout[16] = gamma + alpha*p + mu;
+yout[16] = gamma + alpha*p;
 yout[17] = 0;
 yout[18] = 0;
 yout[19] = 0;
 
 yout[20] = 0;
-yout[21] = gamma + alpha*p*(1-rLv) + mu;
+yout[21] = gamma + alpha*p*(1-rLv);
 yout[22] = 0;
 yout[23] = 0;
 
 yout[24] = 0;
 yout[25] = 0;
-yout[26] = gamma + alpha*p*(1-rLc) + mu;
+yout[26] = gamma + alpha*p*(1-rLc);
 yout[27] = 0;
 
 yout[28] = 0;
 yout[29] = 0;
 yout[30] = 0;
-yout[31] = gamma + alpha*p*(1-rLcv) + mu;
+yout[31] = gamma + alpha*p*(1-rLcv);
 
 }
 

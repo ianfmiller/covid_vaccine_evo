@@ -51,8 +51,6 @@ times<-seq(0,365*100,1)
 gamma<-1/7
 epsilon<-.5
 p<-50
-#mu<-1/(73*365)
-mu<-0
 
 ## 1st scenario
 
@@ -60,7 +58,6 @@ mu<-0
 
 omega<-1/(10*365)
 omegav<-1/(10*365)
-f<-1
 
 ### set b1, b2
 
@@ -104,12 +101,12 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
       {
         states<-start.states
         
-        parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav)
         out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
         get.matricies(out0)
         Re.alpha.delta.start<-getR0(Fmat,Vmat)
         
-        parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+        parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav)
         out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda",hmax=.01)
         epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
         
@@ -119,7 +116,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/rUc0.5rLc0.75p.va
         
         for (alpha2 in virulence.steps)
         {          
-          parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+          parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav)
           out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method="lsoda")
           get.matricies(out3)
           RE.invader<-getR0(Fmat,Vmat)
@@ -155,12 +152,12 @@ do.ess.sim<-function(rUv,rLv)
   {
     states<-start.states
     
-    parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+    parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav)
     out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
     get.matricies(out0)
     Re.alpha.delta.start<-getR0(Fmat,Vmat)
     
-    parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+    parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav)
     out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "rk4")
     epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
     
@@ -170,7 +167,7 @@ do.ess.sim<-function(rUv,rLv)
     
     for (alpha2 in virulence.steps)
     {          
-      parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,mu=mu,f=f)
+      parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav)
       out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
       get.matricies(out3)
       RE.invader<-getR0(Fmat,Vmat)
