@@ -76,6 +76,9 @@ p<-50
 
 # 10 year waning
 
+omega<-1/(365*10)
+omegav<-1/(365*10)
+
 ## alpha optim = 0.00875
 
 ### set b1, b2
