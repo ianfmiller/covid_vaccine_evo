@@ -104,13 +104,13 @@ start.states<-get.states(.375,.5,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.00875.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.00875.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.00875.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.00875.RDS")
 }
 
 ### 75% vaccinated
@@ -119,13 +119,13 @@ start.states<-get.states(.375,.75,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.00875.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.00875.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.00875.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.00875.RDS")
 }
 
 ### 90% vaccinated
@@ -134,13 +134,13 @@ start.states<-get.states(.375,.9,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.00875.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.00875.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.00875.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.00875.RDS")
 }
 
 ### 99% vaccinated
@@ -149,13 +149,13 @@ start.states<-get.states(.375,.99,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.00875.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.00875.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.00875.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.00875.RDS")
 }
 
 ## alpha optim = 0.01
@@ -183,13 +183,13 @@ start.states<-get.states(.375,.5,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.01.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.01.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.01.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.01.RDS")
 }
 
 ### 75% vaccinated
@@ -198,13 +198,13 @@ start.states<-get.states(.375,.75,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.01.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.01.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.01.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.01.RDS")
 }
 
 ### 90% vaccinated
@@ -213,13 +213,13 @@ start.states<-get.states(.375,.9,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.01.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.01.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.01.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.01.RDS")
 }
 
 ### 99% vaccinated
@@ -228,13 +228,13 @@ start.states<-get.states(.375,.99,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS")
 }
 
 ## alpha optim = 0.02
@@ -262,13 +262,13 @@ start.states<-get.states(.375,.5,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.02.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.5alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.02.RDS")
 }
 
 ### 75% vaccinated
@@ -277,13 +277,13 @@ start.states<-get.states(.375,.75,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.02.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.75alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.02.RDS")
 }
 
 ### 90% vaccinated
@@ -292,13 +292,13 @@ start.states<-get.states(.375,.9,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS")
 }
 
 ### 99% vaccinated
@@ -307,13 +307,13 @@ start.states<-get.states(.375,.99,.001) # set startinng conditions
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS")
 }
 
 
