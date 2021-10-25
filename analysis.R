@@ -55,8 +55,9 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
     "rLv"=rLv,
     "Re.alpha.delta.start"=Re.alpha.delta.start,
     "Re.alpha.delta.epi.equi"=Re.alpha.delta.epi.equi,
-    "pip.motif"=paste0(na.omit(ess.result[c(1,3,5)])),
-    "alpha.ess"=ess.result[2]
+    "pip.motif"=paste0(na.omit(ess.result[c(1,3,5)]),collapse=" "),
+    "alpha.ess"=ess.result[2],
+    "repeller.ess"=ess.result[4]
   )
 }
 
