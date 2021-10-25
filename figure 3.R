@@ -1,15 +1,11 @@
 # setup
 col.trans<-.6
 
-s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
-s.colors1<-c(s.blues1,"white",s.reds1)
-s.col.vals1<-seq(-7.5,5.5,length.out = 401)
+colors1<-rev(magma(length(virulence.steps)))
+col.vals1<-virulence.steps
 
-s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
-s.colors2<-c(s.blues2,"white",s.reds2)
-s.col.vals2<-seq(-7.5,7.5,length.out = 401)
+colors2<-c("yellow","blue","green","darkgreen")
+col.vals2<-c(1,2,3,4)
 
 s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
 s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
@@ -19,10 +15,34 @@ s.col.vals3<-seq(-7.5,7.5,length.out = 401)
 s.colors<-list(s.colors1,s.colors2,s.colors3)
 s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
 
+res<-21
+rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
 # plot
 
 ## alpha optim = 0.00875 (intermediate between alpha and delta strain virulence)
+
+par(mfrow=c(2,2))
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS")
+unique(plot.data$pip.motif)
+hist(plot.data$Re.alpha.delta.start,xlim=c(0,5))
+alpha.ess.mat<-matrix(as.numeric(unlist(plot.data$alpha.ess)),res,res,byrow = T)
+plot.result(alpha.ess.mat,colors1,col.vals1)
+
+epi.result.mat<-matrix(NA,res,res)
+for (i in 1:nrow(plot.data))
+{
+  xindex<-which(rUv.steps==plot.data[i,'rUv'])
+  yindex<-which(rLv.steps==plot.data[i,'rLv'])
+  if(plot.data[i,"Re.alpha.delta.start"] >= 1 & plot.data[i,"alpha.ess"] > .00875) {outcome<-1}
+  if(plot.data[i,"Re.alpha.delta.start"] >= 1 & plot.data[i,"alpha.ess"] <= .00875) {outcome<-2}
+  if(plot.data[i,"Re.alpha.delta.start"] < 1 & plot.data[i,"alpha.ess"] > .00875) {outcome<-3}
+  if(plot.data[i,"Re.alpha.delta.start"] < 1 & plot.data[i,"alpha.ess"] <= .00875) {outcome<-4}
+  
+  epi.result.mat[xindex,yindex]<-outcome
+}
+
+plot.result(epi.result.mat,colors2,col.vals2)
 
 ## 50% vaccinated
 
