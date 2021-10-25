@@ -237,7 +237,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99
   saveRDS(out.data,file="~/Documents/GitHub/covid_vaccine_evo/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS")
 }
 
-## alpha optim = 0.01
+## alpha optim = 0.02
 
 ### set b1, b2
 
