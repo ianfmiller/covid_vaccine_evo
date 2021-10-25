@@ -21,16 +21,17 @@ getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
   R0
 }
 
-get.states<-function(p.C, p.C_V, p.I, p.V) #set initial conditions
+get.states<-function(p.C, p.V, p.I) #set initial conditions
 {
-  S_0=1-p.V-p.I-p.C-p.C_V #susceptible
-  V_0=p.V #vaccinated
-  I_0_0=p.I*(1-p.C-p.C_V-p.V) #infected--naive
-  I_V_0=p.I*(p.V) #infected--vaccinated
-  I_C_0=p.I*(p.C) #infected--convalescent
-  I_C_V_0=p.I*(p.C_V) #infected--convalescent
-  C_0=p.C #convalescent
-  C_V_0=p.C_V
+  C_V_0=p.C*p.V # convalescent + vaccinated
+  C_0=(1-p.V)*p.C #convalescent
+  V_0=(1-p.C)*p.V #vaccinated
+  S_0=1-C_V_0-C_0-V_0-p.I #susceptible
+  I_0_0=p.I*(S_0/(C_V_0+C_0+V_0+S_0)) #infected--naive
+  I_V_0=p.I*(V_0/(C_V_0+C_0+V_0+S_0)) #infected--vaccinated
+  I_C_0=p.I*(C_0/(C_V_0+C_0+V_0+S_0)) #infected--convalescent
+  I_C_V_0=p.I*(C_V_0/(C_V_0+C_0+V_0+S_0)) #infected--convalescent
+
   
   states<<-c(S=S_0,
             V=V_0,
