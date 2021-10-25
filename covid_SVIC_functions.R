@@ -84,7 +84,7 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b
   list(vsteps[which.max(R0s)],R0s)
 }
 
-plot.s<-function(plot.mat,cols,col.vals) #plotting function
+plot.result<-function(plot.mat,cols,col.vals) #plotting function
 {
   plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
   xx<-seq(0,1,length.out = res)
