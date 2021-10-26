@@ -1,12 +1,12 @@
 # set up
-source("covid_SVIC_functions.R")
+source("functions.R")
 
 library(deSolve)
 library(rootSolve)
 library(plotrix)
 
-system("R CMD SHLIB SVIC.c")
-dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
+system("R CMD SHLIB epi.model.c")
+dyn.load(paste("epi.model", .Platform$dynlib.ext, sep = ""))
 
 # define model parameters fo rsetting b1 and b2
 

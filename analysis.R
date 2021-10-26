@@ -8,46 +8,46 @@ library(parallel)
 library(doParallel)
 library(foreach)
 library(doRNG)
-source("covid_SVIC_functions.R")
-system("R CMD SHLIB SVIC.c")
-dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
+source("functions.R")
+system("R CMD SHLIB epi.model.c")
+dyn.load(paste("epi.model", .Platform$dynlib.ext, sep = ""))
 
 ## function for running analyses
 
 do.ess.sim<-function(rUv,rLv,plot.sim=F)
 {
   RE.invader.vec<-c() #build empty vector of RE values for invader strain
-  for(alpha1 in virulence.steps)
+  for(alpha1 in A)
   {
     states<-start.states
     
     parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav)
-    out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+    out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
     get.matricies(out0)
     Re.alpha.delta.start<-getR0(Fmat,Vmat)
     
     parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav)
-    out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+    out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
     if(plot.sim) {plot.simulation(out1)}
     epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","C","C_V")]
     
-    out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
+    out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31),method = "lsoda")
     get.matricies(out2)
     Re.alpha.delta.epi.equi<-getR0(Fmat,Vmat)
     
-    for (alpha2 in virulence.steps)
+    for (alpha2 in A)
     {          
       parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav)
-      out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+      out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
       get.matricies(out3)
       RE.invader<-getR0(Fmat,Vmat)
       RE.invader.vec<-c(RE.invader.vec,RE.invader)
     }
     print(paste0("finished alpha1 = ",alpha1))
   }
-  RE.invader.mat<-matrix(RE.invader.vec,length(virulence.steps),length(virulence.steps),byrow = T)
-  colnames(RE.invader.mat)<-virulence.steps
-  rownames(RE.invader.mat)<-virulence.steps
+  RE.invader.mat<-matrix(RE.invader.vec,length(A),length(A),byrow = T)
+  colnames(RE.invader.mat)<-A
+  rownames(RE.invader.mat)<-A
   image(RE.invader.mat>=1)
   ess.result<-pip.analysis(RE.invader.mat)
   data.frame(
@@ -64,7 +64,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 ## set global parameters
 
 times<-seq(0,365*400,1)
-virulence.steps<-seq(.003,.2,.0005)
+A<-seq(.003,.2,.0005)
 res<-21
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 

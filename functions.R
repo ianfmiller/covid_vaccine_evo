@@ -1,16 +1,14 @@
-### convenience functions for analysis
-
 library(viridis)
 
-## functions for setting b1 according to assumed ES virulence, dr, and gamma
-
-get.matricies<-function(output) #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
+#calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
+get.matricies<-function(output)
 {
   Fmat<<-matrix(output[1,10:25],4,4,byrow = T)
   Vmat<<-matrix(output[1,26:41],4,4,byrow = T)
 }
 
-getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
+#calculates R0 from F and V matricies
+getR0<-function(Fmat,Vmat)
 {
   values<-eigen(Fmat %*% solve(Vmat))$values
   R0<<-0
@@ -21,16 +19,17 @@ getR0<-function(Fmat,Vmat) #calculates R0 from F and V matricies
   R0
 }
 
-get.states<-function(p.C, p.V, p.I) #set initial conditions
+#set initial conditions
+get.states<-function(p.C, p.V, p.I)
 {
-  C_V_0=p.C*p.V # convalescent + vaccinated
-  C_0=(1-p.V)*p.C #convalescent
-  V_0=(1-p.C)*p.V #vaccinated
-  S_0=1-C_V_0-C_0-V_0-p.I #susceptible
-  I_0_0=p.I*(S_0/(C_V_0+C_0+V_0+S_0)) #infected--naive
-  I_V_0=p.I*(V_0/(C_V_0+C_0+V_0+S_0)) #infected--vaccinated
-  I_C_0=p.I*(C_0/(C_V_0+C_0+V_0+S_0)) #infected--convalescent
-  I_C_V_0=p.I*(C_V_0/(C_V_0+C_0+V_0+S_0)) #infected--convalescent
+  C_V_0=p.C*p.V ## convalescent + vaccinated
+  C_0=(1-p.V)*p.C ##convalescent
+  V_0=(1-p.C)*p.V ## vaccinated
+  S_0=1-C_V_0-C_0-V_0-p.I ## susceptible
+  I_0_0=p.I*(S_0/(C_V_0+C_0+V_0+S_0)) ## infected--naive
+  I_V_0=p.I*(V_0/(C_V_0+C_0+V_0+S_0)) ## infected--vaccinated
+  I_C_0=p.I*(C_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
+  I_C_V_0=p.I*(C_V_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
 
   
   states<<-c(S=S_0,
@@ -43,28 +42,31 @@ get.states<-function(p.C, p.V, p.I) #set initial conditions
             C_V=C_V_0)
 }
 
-
-find.R0<-function(alpha,b1,b2) # get R0 given vr, b1, b2
+# get R0 given vr, b1, b2
+find.R0<-function(alpha,b1,b2)
 {
   parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                 dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+                 dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
   get.matricies(new.out)
   R0.calc<-getR0(Fmat,Vmat)
   R0.calc
 }
 
-R0.search<-function(alpha,b1,b2) # get differen between assumed R0 and R0 given vr, b1, b2
+# get differen between assumed R0 and R0 given vr, b1, b2
+R0.search<-function(alpha,b1,b2)
 {
   R0.assumed-find.R0(alpha,b1,b2)
 }
 
-b2.search<-function(b1,b2,optim.alpha.assumed) #get abs difference between optim vir assumed and true optim vir given b1,b2
+#get abs difference between optim vir assumed and true optim vir given b1,b2
+b2.search<-function(b1,b2,optim.alpha.assumed)
 {
   optim.alpha.assumed-optimize(find.R0,b1=b1,b2=b2,interval = c(0.0025,1),maximum = T,tol=1e-10)$maximum
 }
 
-find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b2
+# get optim vir given b1, b2
+find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) 
 {
   rU<-rU
   rL<-rL
@@ -76,7 +78,7 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b
   {
     parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                   dllname = "SVIC", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+                   dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
     get.matricies(new.out)
     R0.calc<-getR0(Fmat,Vmat)
     R0s<-c(R0s,R0.calc)
@@ -84,7 +86,8 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc) # get optim vir given b1, b
   list(vsteps[which.max(R0s)],R0s)
 }
 
-plot.result<-function(plot.mat,cols,col.vals) #plotting function
+# plotting function for visualizing results matrix
+plot.result<-function(plot.mat,cols,col.vals)
 {
   plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
   xx<-seq(0,1,length.out = res)
@@ -131,6 +134,7 @@ plot.outcome<-function(plot.mat.R0.obs,plot.mat.R0.mutatnt)
   }
 }
 
+#plots the output of a simulation
 plot.simulation<-function(output,legend=T)
 {
   S.plot<-output[,"S"]
@@ -164,7 +168,7 @@ plot.simulation<-function(output,legend=T)
   }
 }
 
-### Scans vector from start to finish to find 1st local maximum
+# Scans vector from start to finish to find 1st local maximum
 find.peak<-function(x)
 {
   peak.index<-NA
@@ -175,7 +179,7 @@ find.peak<-function(x)
   return(peak.index)
 }
 
-### Used to find virulence strategy with fitness equal to that of local optimum 
+# Used to find virulence strategy with fitness equal to that of local optimum 
 find.break.even.point<-function(x,peak.index)
 {
   break.even.point<-NA
@@ -185,6 +189,16 @@ find.break.even.point<-function(x,peak.index)
   }
   return(break.even.point)
 }
+
+# Analyzes PIP. Returns a vector of length 13.
+## The first entry indicates whether an ESS exists ("ESS") or does not (NA)
+## The second entry gives the virulence associated with an ESS if it exists
+## The third entry indicates whether a repeller point exists ("REPELLER") or does not (NA)
+## THe fourth entry gives the virulence associated with the repeller point if it exists
+## The fifth entry indicates whether or not selection for hypervirulence always occurs ("selection for hypervirulence") or does not (NA)
+## The sixth and eighth entries indicates whether upper/lower eradicationn thresholds exist ("upper.erad"/"lower.erad") or not (NA/NA). See https://royalsocietypublishing.org/doi/full/10.1098/rsif.2019.0642 for definitions.
+## The seventh and ninth entries give the virulence associated with the upper/lower eradication thresholds if they exist.
+## The tenth and twelvth entries indicate wehter upper/lower middle eradication thresholds exist ("mid.erad.upper"/"mid.erad.lower) exist or do not (NA/NA). Middle eradication bounds specify the narrow range of virulence strategies below some repeller points in which no strategy can persist. These bounds are not relevant for the analyses. 
 
 pip.analysis<-function(mat)
 {
@@ -204,12 +218,12 @@ pip.analysis<-function(mat)
   col.max<-find.peak(colSums(mod.mat))
   col.min<-find.peak(-1*colSums(mod.mat))
   
-  if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-virulence.steps[col.max]}}
-  if (is.numeric(col.min)&&is.numeric(row.max)) {if(col.min-row.max<=1) {output[3]<-"REPELLER"; output[4]<-virulence.steps[row.max]}}
+  if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-A[col.max]}}
+  if (is.numeric(col.min)&&is.numeric(row.max)) {if(col.min-row.max<=1) {output[3]<-"REPELLER"; output[4]<-A[row.max]}}
   
   if(isTRUE(as.numeric(output[2])>0)) #used to check for repeller point and get eradication bounds
   {
-    up.sub.mat.cols<-which(virulence.steps>max(as.numeric(output[2],output[4])))
+    up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
     up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
     up.sub.mat.col.sums<-colSums(up.sub.mat)
     
@@ -220,22 +234,22 @@ pip.analysis<-function(mat)
       if(upper.bound<dim(mat)[1] && is.na(output[3]))
       {
         output[3]<-"REPELLER2"
-        output[4]<-virulence.steps[upper.bound+1]
+        output[4]<-A[upper.bound+1]
         output[10]<-"mid.erad.lower"
-        output[11]<-virulence.steps[lower.bound]
+        output[11]<-A[lower.bound]
         output[12]<-"mid.erad.upper"
-        output[13]<-virulence.steps[upper.bound]
+        output[13]<-A[upper.bound]
         
       }
       
       if(upper.bound==dim(mat)[1])
       {
         output[6]<-"upper.erad"
-        output[7]<-virulence.steps[lower.bound]
+        output[7]<-A[lower.bound]
       }
     }
     
-    low.sub.mat.cols<-which(virulence.steps<output[2])
+    low.sub.mat.cols<-which(A<output[2])
     low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
     low.sub.mat.col.sums<-colSums(low.sub.mat)
     
@@ -247,7 +261,7 @@ pip.analysis<-function(mat)
       if(lower.bound==1)
       {
         output[8]<-"lower.erad"
-        output[9]<-virulence.steps[upper.bound]
+        output[9]<-A[upper.bound]
       }
     }
   }
@@ -259,7 +273,7 @@ pip.analysis<-function(mat)
     if(length(which(colSums(mod.mat)==min(colSums(mod.mat))))>2)
     {
       output[8]<-"lower.erad"
-      output[9]<-virulence.steps[max(which(colSums(mod.mat)==min(colSums(mod.mat))))]
+      output[9]<-A[max(which(colSums(mod.mat)==min(colSums(mod.mat))))]
     }
   }
   
@@ -272,9 +286,9 @@ pip.analysis<-function(mat)
     if (length(overlap)>0)
     {
       output[1]<-"ESS"
-      output[2]<-mean(virulence.steps[overlap])
+      output[2]<-mean(A[overlap])
       { #get erad bounds
-        up.sub.mat.cols<-which(virulence.steps>max(as.numeric(output[2],output[4])))
+        up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
         up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
         up.sub.mat.col.sums<-colSums(up.sub.mat)
         
@@ -285,11 +299,11 @@ pip.analysis<-function(mat)
           if(upper.bound==dim(mat)[1])
           {
             output[6]<-"upper.erad"
-            output[7]<-virulence.steps[lower.bound]
+            output[7]<-A[lower.bound]
           }
         }
         
-        low.sub.mat.cols<-which(virulence.steps<output[2])
+        low.sub.mat.cols<-which(A<output[2])
         low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
         low.sub.mat.col.sums<-colSums(low.sub.mat)
         
@@ -301,7 +315,7 @@ pip.analysis<-function(mat)
           if(lower.bound==1)
           {
             output[8]<-"lower.erad"
-            output[9]<-virulence.steps[upper.bound]
+            output[9]<-A[upper.bound]
           }
         }
       }
