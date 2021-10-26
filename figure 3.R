@@ -23,7 +23,7 @@ rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 ## alpha optim = 0.00875 (intermediate between alpha and delta strain virulence)
 
 par(mfrow=c(2,2))
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.02.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.75alpha.optim0.02.RDS")
 unique(plot.data$pip.motif)
 hist(plot.data$Re.alpha.delta.start,xlim=c(0,5))
 alpha.ess.mat<-matrix(as.numeric(unlist(plot.data$alpha.ess)),res,res,byrow = T)
