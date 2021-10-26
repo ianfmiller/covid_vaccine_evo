@@ -63,8 +63,8 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 
 ## set global parameters
 
-times<-seq(0,365*100,1)
-virulence.steps<-seq(.003,.2,.001)
+times<-seq(0,365*400,1)
+virulence.steps<-seq(.003,.2,.0005)
 res<-21
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
