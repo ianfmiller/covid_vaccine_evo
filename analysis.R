@@ -68,9 +68,6 @@ virulence.steps<-seq(.003,.2,.0005)
 res<-21
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
-rUc<-.5 #convalescent class
-rLc<-.75 #convalescent class
-
 gamma<-1/7
 epsilon<-.5
 p<-50
@@ -102,6 +99,8 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 ### 50% vaccinated
 
 start.states<-get.states(.375,.5,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -117,6 +116,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 75% vaccinated
 
 start.states<-get.states(.375,.75,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -132,6 +133,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 90% vaccinated
 
 start.states<-get.states(.375,.9,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -147,6 +150,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 99% vaccinated
 
 start.states<-get.states(.375,.99,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -181,6 +186,8 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 ### 50% vaccinated
 
 start.states<-get.states(.375,.5,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -196,6 +203,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 75% vaccinated
 
 start.states<-get.states(.375,.75,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -211,6 +220,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 90% vaccinated
 
 start.states<-get.states(.375,.9,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -226,6 +237,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 99% vaccinated
 
 start.states<-get.states(.375,.99,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -260,6 +273,8 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 ### 50% vaccinated
 
 start.states<-get.states(.375,.5,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -275,6 +290,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 75% vaccinated
 
 start.states<-get.states(.375,.75,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -290,6 +307,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 90% vaccinated
 
 start.states<-get.states(.375,.9,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
@@ -305,6 +324,8 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
 ### 99% vaccinated
 
 start.states<-get.states(.375,.99,.001) # set startinng conditions
+rUc<-.5 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
