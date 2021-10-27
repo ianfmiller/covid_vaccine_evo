@@ -3,8 +3,8 @@ library(viridis)
 #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
 get.matricies<-function(output)
 {
-  Fmat<<-matrix(output[1,12:22],4,4,byrow = T)
-  Vmat<<-matrix(output[1,28:43],4,4,byrow = T)
+  Fmat<<-matrix(output[1,12:47],6,6,byrow = T)
+  Vmat<<-matrix(output[1,48:83],6,6,byrow = T)
 }
 
 #calculates R0 from F and V matricies
@@ -49,9 +49,9 @@ get.states<-function(p.C, p.V, p.I)
 # get R0 given vr, b1, b2
 find.R0<-function(alpha,b1,b2)
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                 dllname = "epi.model", initfunc = "initmod",nout=34,outnames=paste0("out",0:33))
+                 dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
   get.matricies(new.out)
   R0.calc<-getR0(Fmat,Vmat)
   R0.calc
@@ -80,9 +80,9 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc)
   R0s<-c()
   for(alpha in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                   dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+                   dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
     get.matricies(new.out)
     R0.calc<-getR0(Fmat,Vmat)
     R0s<-c(R0s,R0.calc)
