@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --nodes = 1
-#SBATCH --ntasks = 1
-#SBATCH --cpus-per-task = 20
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=20
 #SBATCH -t 0-05:00:00
 #SBATCH -J "covid.vacc"
 #SBATCH --array=1-12
