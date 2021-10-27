@@ -64,7 +64,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 ## set global parameters
 
 times<-seq(0,365*400,1)
-A<-seq(.0025,.2,.0005)
+A<-c(seq(.0025,.05,.00025),seq(.055,.4,.005))
 res<-21
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
@@ -109,7 +109,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
-  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
+  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dopar% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
   saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.5alpha.optim0.00875.RDS")
 }
 
