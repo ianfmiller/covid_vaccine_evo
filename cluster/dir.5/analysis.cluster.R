@@ -10,7 +10,7 @@ library(foreach)
 library(doRNG)
 source("~/Documents/GitHub/covid_vaccines_virulence_evolution/functions.R")
 system("R CMD SHLIB ~/Documents/GitHub/covid_vaccines_virulence_evolution/epi.model.c")
-dyn.load(paste("epi.model", .Platform$dynlib.ext, sep = ""))
+dyn.load(paste("~/Documents/GitHub/covid_vaccines_virulence_evolution/epi.model", .Platform$dynlib.ext, sep = ""))
 
 ## function for running analyses
 
