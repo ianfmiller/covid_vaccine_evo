@@ -43,33 +43,54 @@ foi = (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) +
   
 ydot[0] = -y[0] * foi  + y[6]*omega + y[7]*omegav + y[1]*omegav;
 
+if( (y[0] < 0.0000000001) && (ydot[0] < 0)) {ydot[0] = 0;}
+
 /* V */
   
 ydot[1] =  -y[1] * (((1-rUv) * foi) + omegav);
+
+if( (y[1] < 0.0000000001) && (ydot[1] < 0)) {ydot[1] = 0;}
+
 
 /* I_0 */
  
 ydot[2] = y[0] * foi - (gamma + alpha*p) * y[2];
 
+if( (y[2] < 0.0000000001) && (ydot[2] < 0)) {ydot[2] = 0;}
+
+
 /* I_V */
   
 ydot[3] = y[1] * (1-rUv) * foi - (gamma + (1-rLv)*alpha*p) * y[3];
+
+if( (y[3] < 0.0000000001) && (ydot[3] < 0)) {ydot[3] = 0;}
+
 
 /* I_C */
 
 ydot[4] = y[6] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p) * y[4];
 
+if( (y[4] < 0.0000000001) && (ydot[4] < 0)) {ydot[4] = 0;}
+
+
 /* I_C_V */
 
 ydot[5] = y[7] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p) * y[5];
+
+if( (y[5] < 0.0000000001) && (ydot[5] < 0)) {ydot[5] = 0;}
+
 
 /* C */
   
 ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
 
+if( (y[6] < 0.0000000001) && (ydot[6] < 0)) {ydot[6] = 0;}
+
 /* C_V */
 
 ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
+
+if( (y[7] < 0.0000000001) && (ydot[7] < 0)) {ydot[7] = 0;}
 
 
 /* output for Fmat */
