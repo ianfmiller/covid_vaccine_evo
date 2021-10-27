@@ -41,7 +41,7 @@ foi = (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) +
 
 /* S */
   
-ydot[0] = -y[0] * foi  + y[6]*omega + y[7]*omegav + y[1]*omegav;
+ydot[0] = -y[0] * foi  + y[8]*omega + y[9]*omegav + y[1]*omegav;
 
 if( (y[0] < 0.0000000001) && (ydot[0] < 0)) {ydot[0] = 0;}
 
@@ -68,29 +68,42 @@ if( (y[3] < 0.0000000001) && (ydot[3] < 0)) {ydot[3] = 0;}
 
 /* I_C */
 
-ydot[4] = y[6] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p) * y[4];
+ydot[4] = y[8] * (1-rUc) * foi - (gamma + (1-rLc)*alpha*p) * y[4];
 
 if( (y[4] < 0.0000000001) && (ydot[4] < 0)) {ydot[4] = 0;}
 
 
 /* I_C_V */
 
-ydot[5] = y[7] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p) * y[5];
+ydot[5] = y[9] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p) * y[5];
 
 if( (y[5] < 0.0000000001) && (ydot[5] < 0)) {ydot[5] = 0;}
 
 
-/* C */
-  
-ydot[6] = y[2]*(gamma + alpha*p) + y[4]*(gamma + (1-rLc)*alpha*p) - y[6] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
+/* R_C */
+
+ydot[6] = alpha * p * y[2] + (1-rLc) * alpha * p * y[4] - (1/10) * y[6];
 
 if( (y[6] < 0.0000000001) && (ydot[6] < 0)) {ydot[6] = 0;}
 
+/* R_C_V */
+
+ydot[7] = (1-rLv)  * alpha * p * y[3] + (1-rLcv) * alpha * p * y[5] - (1/10) * y[7];
+
+if( (y[6] < 0.0000000001) && (ydot[6] < 0)) {ydot[6] = 0;}
+
+
+/* C */
+  
+ydot[8] = (y[2] + y[4]) * gamma + (1/10)*y[6] - y[8] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
+
+if( (y[8] < 0.0000000001) && (ydot[8] < 0)) {ydot[8] = 0;}
+
 /* C_V */
 
-ydot[7] = y[3]*(gamma + (1-rLv)*alpha*p ) + y[5]*(gamma + (1-rLcv)*alpha*p) - y[7] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
+ydot[9] = (y[3] + y[5]) * gamma + (1/10)*y[7] - y[9] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
 
-if( (y[7] < 0.0000000001) && (ydot[7] < 0)) {ydot[7] = 0;}
+if( (y[9] < 0.0000000001) && (ydot[9] < 0)) {ydot[9] = 0;}
 
 
 /* output for Fmat */
@@ -105,15 +118,15 @@ yout[5] = y[1]*(1-rUv)*betafunc(alpha,rUv,rLv,epsilon);
 yout[6] = y[1]*(1-rUv)*betafunc(alpha,rUc,rLc,epsilon);
 yout[7] = y[1]*(1-rUv)*betafunc(alpha,rUcv,rLcv,epsilon);
 
-yout[8] = y[6]*(1-rUc)*betafunc(alpha,0,0,epsilon);
-yout[9] = y[6]*(1-rUc)*betafunc(alpha,rUv,rLv,epsilon);
-yout[10] = y[6]*(1-rUc)*betafunc(alpha,rUc,rLc,epsilon);
-yout[11] = y[6]*(1-rUc)*betafunc(alpha,rUcv,rLcv,epsilon);
+yout[8] = y[8]*(1-rUc)*betafunc(alpha,0,0,epsilon);
+yout[9] = y[8]*(1-rUc)*betafunc(alpha,rUv,rLv,epsilon);
+yout[10] = y[8]*(1-rUc)*betafunc(alpha,rUc,rLc,epsilon);
+yout[11] = y[8]*(1-rUc)*betafunc(alpha,rUcv,rLcv,epsilon);
 
-yout[12] = y[7]*(1-rUcv)*betafunc(alpha,0,0,epsilon);
-yout[13] = y[7]*(1-rUcv)*betafunc(alpha,rUv,rLv,epsilon);
-yout[14] = y[7]*(1-rUcv)*betafunc(alpha,rUc,rLc,epsilon);
-yout[15] = y[7]*(1-rUcv)*betafunc(alpha,rUcv,rLcv,epsilon);
+yout[12] = y[9]*(1-rUcv)*betafunc(alpha,0,0,epsilon);
+yout[13] = y[9]*(1-rUcv)*betafunc(alpha,rUv,rLv,epsilon);
+yout[14] = y[9]*(1-rUcv)*betafunc(alpha,rUc,rLc,epsilon);
+yout[15] = y[9]*(1-rUcv)*betafunc(alpha,rUcv,rLcv,epsilon);
 
   
  /* output for Vmat */
