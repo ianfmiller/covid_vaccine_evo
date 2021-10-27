@@ -43,7 +43,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
       RE.invader<-getR0(Fmat,Vmat)
       RE.invader.vec<-c(RE.invader.vec,RE.invader)
     }
-    print(paste0("finished alpha1 = ",alpha1))
+    #print(paste0("finished alpha1 = ",alpha1))
   }
   RE.invader.mat<-matrix(RE.invader.vec,length(A),length(A),byrow = T)
   colnames(RE.invader.mat)<-A
@@ -59,6 +59,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
     "alpha.ess"=ess.result[2],
     "repeller.ess"=ess.result[4]
   )
+  print(paste0("finished rUv = ",rUv," rLv = ",rLv))
 }
 
 ## set global parameters
@@ -109,7 +110,7 @@ if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
-  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dorng% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
+  out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dopar% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
   saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.99alpha.optim0.01.RDS")
 }
 
