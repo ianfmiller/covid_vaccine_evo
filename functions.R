@@ -149,10 +149,10 @@ plot.simulation<-function(output,legend=T)
   
   plot(plot.x,S.plot,type="l",col="blue",ylim=c(0,1),lwd=2,xlab="days",ylab="frequency")
   points(plot.x,V.plot,type="l",col="darkolivegreen1",lwd=2)
-  points(plot.x,I_0.plot,type="l",col="orange",lwd=2)
-  points(plot.x,I_V.plot,type="l",col="orangered",lwd=2)
+  points(plot.x,I_0.plot,type="l",col="yellow",lwd=2)
+  points(plot.x,I_V.plot,type="l",col="orange",lwd=2)
   points(plot.x,I_C.plot,type="l",col="red",lwd=2)
-  points(plot.x,I_C_V.plot,type="l",col="violetred",lwd=2)
+  points(plot.x,I_C_V.plot,type="l",col="purple",lwd=2)
   points(plot.x,C.plot,type="l",col="darkseagreen1",lwd=2)
   points(plot.x,C_V.plot,type="l",col="darkgreen",lwd=2)
   
@@ -161,7 +161,7 @@ plot.simulation<-function(output,legend=T)
     legend(
       "topright",
       legend=c("S","V","I_0","I_V","I_C","I_C_V","C","C_V"),
-      col=c("blue","darkolivegreen1","orange",'orangered',"red","violetred","darkseagreen1","darkgreen"),
+      col=c("blue","darkolivegreen1","yellow",'orange',"red","purple","darkseagreen1","darkgreen"),
       lty=1,
       lwd=2
     )
