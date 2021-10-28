@@ -59,7 +59,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
     "alpha.ess"=ess.result[2],
     "repeller.ess"=ess.result[4]
   )
-  print(paste0("finished rUv = ",rUv," rLv = ",rLv))
+  #print(paste0("finished rUv = ",rUv," rLv = ",rLv))
 }
 
 ## set global parameters
