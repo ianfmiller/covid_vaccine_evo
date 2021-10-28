@@ -64,7 +64,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 
 ## set global parameters
 
-times<-seq(0,365*400,1)
+times<-seq(0,365*1,1)
 A<-seq(.0025,.2,.0005)
 res<-11
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
@@ -75,8 +75,8 @@ p<-50
 
 # 10 year waning
 
-omega<-1/(365*10)
-omegav<-1/(365*10)
+omega<-0
+omegav<-0
 
 ## alpha optim = 0.01
 
