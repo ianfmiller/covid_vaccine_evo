@@ -1,8 +1,6 @@
 # setup
-col.trans<-.6
-
-A.plot<-seq(.015,.2,.00025)
-colors1<-rev(magma(length(A.plot)))
+A.plot<-c(-2,-1,seq(.015,.2,.00025))
+colors1<-c("black","grey",rev(magma(length(A.plot))))
 col.vals1<-A.plot
 
 res<-11
@@ -15,7 +13,9 @@ par(mfrow=c(3,4),oma=c(6,6,0,0))
 
 ## 50% vaccinated
 plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega0p.vacc0.5alpha.optim0.00875.RDS")
-alpha.ess.mat<-matrix(as.numeric(unlist(plot.data$alpha.ess)),res,res,byrow = T)
+alpha.ess.mat.data<-as.numeric(unlist(plot.data$alpha.ess))
+alpha.ess.mat.data[which(plot.data$pip.motif=="selection for hypervirulence")]<-(-2)
+alpha.ess.mat.data[which(plot.data$pip.motif=="global eradication")]<-(-1)
 plot.result(alpha.ess.mat,colors1,col.vals1)
 ## 75% vaccinated
 plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega0p.vacc0.75alpha.optim0.00875.RDS")
