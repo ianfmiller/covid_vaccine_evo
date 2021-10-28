@@ -105,13 +105,13 @@ rLc<-.75 #convalescent class
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega0p.vacc0.9alpha.optim0.02.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dopar% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega10p.vacc0.9alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/omega0p.vacc0.9alpha.optim0.02.RDS")
 }
 
 
