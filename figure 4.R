@@ -8,6 +8,24 @@ library(plotrix)
 system("R CMD SHLIB SVIC.c")
 dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
 
+colors2<-c("yellow","blue","green","darkgreen")
+col.vals2<-c(1,2,3,4)
+
+epi.result.mat<-matrix(NA,res,res)
+for (i in 1:nrow(plot.data))
+{
+  xindex<-which(rUv.steps==plot.data[i,'rUv'])
+  yindex<-which(rLv.steps==plot.data[i,'rLv'])
+  if(plot.data[i,"Re.alpha.delta.start"] >= 1 & plot.data[i,"alpha.ess"] > .00875) {outcome<-1}
+  if(plot.data[i,"Re.alpha.delta.start"] >= 1 & plot.data[i,"alpha.ess"] <= .00875) {outcome<-2}
+  if(plot.data[i,"Re.alpha.delta.start"] < 1 & plot.data[i,"alpha.ess"] > .00875) {outcome<-3}
+  if(plot.data[i,"Re.alpha.delta.start"] < 1 & plot.data[i,"alpha.ess"] <= .00875) {outcome<-4}
+  
+  epi.result.mat[xindex,yindex]<-outcome
+}
+
+plot.result(epi.result.mat,colors2,col.vals2)
+
 #### define model parameters
 
 gamma<-1
@@ -466,20 +484,20 @@ plot(0,0,type="n",xlab="",ylab="",bty="n",axes = F,xlim=c(0,1),ylim=c(0,1))
 par(oma=c(4,0,4,0),mar=c(5,0,4,0))
 legend("left",yjust=.5,
        legend=c(
-        expression(' 1 > '*R[E](alpha[B.1.1.7])*' > '*R[E](1.5*'*'*alpha[B.1.1.7])),NA,NA,
-        expression(' 1 > '*R[E](1.5*'*'*alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7])),NA,NA,
-        expression(' '*R[E](alpha[B.1.1.7])*' > 1 & '),expression(R[E](alpha[B.1.1.7])*' > '*R[E](1.5*'*'*alpha[B.1.1.7])),NA,
-        expression(' '*R[E](1.5*'*'*alpha[B.1.1.7])*' > 1 > '*R[E](alpha[B.1.1.7])),NA,NA,
-        expression(' '*R[E](1.5*'*'*alpha[B.1.1.7])*' > 1 &'),expression(R[E](1.5*'*'*alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7])),NA
-        ),
-      col=c(
-        viridis(4)[1],NA,NA,
-        viridis(4,alpha=.5)[1],NA,NA,
-        viridis(4)[2],NA,NA,
-        viridis(4)[3],NA,NA,
-        viridis(4)[4],NA,NA
-        ),
-      pch=15,cex=1.1,pt.cex = 4,bty="n",y.intersp = 1.5)
+         expression(' 1 > '*R[E](alpha[B.1.1.7])*' > '*R[E](1.5*'*'*alpha[B.1.1.7])),NA,NA,
+         expression(' 1 > '*R[E](1.5*'*'*alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7])),NA,NA,
+         expression(' '*R[E](alpha[B.1.1.7])*' > 1 & '),expression(R[E](alpha[B.1.1.7])*' > '*R[E](1.5*'*'*alpha[B.1.1.7])),NA,
+         expression(' '*R[E](1.5*'*'*alpha[B.1.1.7])*' > 1 > '*R[E](alpha[B.1.1.7])),NA,NA,
+         expression(' '*R[E](1.5*'*'*alpha[B.1.1.7])*' > 1 &'),expression(R[E](1.5*'*'*alpha[B.1.1.7])*' > '*R[E](alpha[B.1.1.7])),NA
+       ),
+       col=c(
+         viridis(4)[1],NA,NA,
+         viridis(4,alpha=.5)[1],NA,NA,
+         viridis(4)[2],NA,NA,
+         viridis(4)[3],NA,NA,
+         viridis(4)[4],NA,NA
+       ),
+       pch=15,cex=1.1,pt.cex = 4,bty="n",y.intersp = 1.5)
 
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
 mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
