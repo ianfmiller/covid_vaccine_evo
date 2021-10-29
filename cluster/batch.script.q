@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=20
-#SBATCH -t 0-05:00:00
+#SBATCH -t 0-01:00:00
 #SBATCH -J "covid.vacc"
 #SBATCH --array=1-12
 #SBATCH --mail-type=END
