@@ -16,7 +16,7 @@ static double parms[15];
 #define p parms[11]
 #define omega parms[12]
 #define omegav parms[13]
-#define iso parms[14]
+#define q parms[14]
 
 
 double betafunc (double virulence, double rU_effect, double rL_effect, double epsilon_effect) {
@@ -81,28 +81,28 @@ ydot[5] = y[9] * (1-rUcv) * foi - (gamma + (1-rLcv)*alpha*p) * y[5];
 if( (y[5] < 0.0000000001) && (ydot[5] < 0)) {ydot[5] = 0;}
 
 
-/* R_C */
+/* Q */
 
-ydot[6] = alpha * p * y[2] + (1-rLc) * alpha * p * y[4] - iso * y[6];
+ydot[6] = alpha * p * y[2] + (1-rLc) * alpha * p * y[4] - q * y[6];
 
 if( (y[6] < 0.0000000001) && (ydot[6] < 0)) {ydot[6] = 0;}
 
-/* R_C_V */
+/* Q_V */
 
-ydot[7] = (1-rLv)  * alpha * p * y[3] + (1-rLcv) * alpha * p * y[5] - iso * y[7];
+ydot[7] = (1-rLv)  * alpha * p * y[3] + (1-rLcv) * alpha * p * y[5] - q * y[7];
 
 if( (y[7] < 0.0000000001) && (ydot[7] < 0)) {ydot[7] = 0;}
 
 
 /* C */
   
-ydot[8] = (y[2] + y[4]) * gamma + iso*y[6] - y[8] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
+ydot[8] = (y[2] + y[4]) * gamma + q*y[6] - y[8] * (((1-rUc) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)+ y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omega);
 
 if( (y[8] < 0.0000000001) && (ydot[8] < 0)) {ydot[8] = 0;}
 
 /* C_V */
 
-ydot[9] = (y[3] + y[5]) * gamma + iso*y[7] - y[9] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
+ydot[9] = (y[3] + y[5]) * gamma + q*y[7] - y[9] * (((1-rUcv) * (y[2]*betafunc(alpha,0,0,epsilon) + y[3]*betafunc(alpha,rUv,rLv,epsilon) + y[4]*betafunc(alpha,rUc,rLc,epsilon)  + y[5]*betafunc(alpha,rUcv,rLcv,epsilon))) + omegav);
 
 if( (y[9] < 0.0000000001) && (ydot[9] < 0)) {ydot[9] = 0;}
 
@@ -186,7 +186,7 @@ yout[60] = -1*alpha*p;
 yout[61] = 0;
 yout[62] = -1*alpha*p*(1-rLc);
 yout[63] = 0;
-yout[64] = iso;
+yout[64] = q;
 yout[65] = 0;
 
 yout[66] = 0;
@@ -194,7 +194,7 @@ yout[67] = -1*alpha*p*(1-rLv);
 yout[68] = 0;
 yout[69] = -1*alpha*p*(1-rLcv);
 yout[70] = 0;
-yout[71] = iso;
+yout[71] = q;
 }
 
 /* END file mymod.c */

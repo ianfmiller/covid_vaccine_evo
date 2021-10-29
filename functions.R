@@ -30,8 +30,8 @@ get.states<-function(p.C, p.V, p.I)
   I_V_0=p.I*(V_0/(C_V_0+C_0+V_0+S_0)) ## infected--vaccinated
   I_C_0=p.I*(C_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
   I_C_V_0=p.I*(C_V_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
-  R_C_0=0
-  R_C_V_0=0
+  Q_0=0
+  Q_V_0=0
 
   
   states<<-c(S=S_0,
@@ -40,8 +40,8 @@ get.states<-function(p.C, p.V, p.I)
             I_V=I_V_0,
             I_C=I_C_0,
             I_C_V=I_C_V_0,
-            R_C=R_C_0,
-            R_C_V=R_C_V_0,
+            Q=Q_0,
+            Q_V=Q_V_0,
             C=C_0,
             C_V=C_V_0)
 }
@@ -49,7 +49,7 @@ get.states<-function(p.C, p.V, p.I)
 # get R0 given vr, b1, b2
 find.R0<-function(alpha,b1,b2)
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,q=q)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                  dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
   get.matricies(new.out)
@@ -80,7 +80,7 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc)
   R0s<-c()
   for(alpha in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,q=q)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
                    dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
     get.matricies(new.out)
@@ -147,8 +147,8 @@ plot.simulation<-function(output,legend=T)
   I_V.plot<-output[,"I_V"]
   I_C.plot<-output[,"I_C"]
   I_C_V.plot<-output[,"I_C_V"]
-  R_C.plot<-output[,"R_C"]
-  R_C_V.plot<-output[,"R_C_V"]
+  Q.plot<-output[,"Q"]
+  Q_V.plot<-output[,"Q_V"]
   C.plot<-output[,"C"]
   C_V.plot<-output[,"C_V"]
   plot.x<-1:nrow(output)
@@ -159,8 +159,8 @@ plot.simulation<-function(output,legend=T)
   points(plot.x,I_V.plot,type="l",col="orange",lwd=2)
   points(plot.x,I_C.plot,type="l",col="red",lwd=2)
   points(plot.x,I_C_V.plot,type="l",col="purple",lwd=2)
-  points(plot.x,R_C.plot,type="l",col="black",lwd=2,lty=1)
-  points(plot.x,R_C_V.plot,type="l",col="grey",lwd=2,lty=1)
+  points(plot.x,Q.plot,type="l",col="black",lwd=2,lty=1)
+  points(plot.x,Q_V.plot,type="l",col="grey",lwd=2,lty=1)
   points(plot.x,C.plot,type="l",col="darkseagreen1",lwd=2)
   points(plot.x,C_V.plot,type="l",col="darkgreen",lwd=2)
   
@@ -168,7 +168,7 @@ plot.simulation<-function(output,legend=T)
   {
     legend(
       "topright",
-      legend=c("S","V","I_0","I_V","I_C","I_C_V","R_C","R_C_V","C","C_V"),
+      legend=c("S","V","I_0","I_V","I_C","I_C_V","Q","Q_V","C","C_V"),
       col=c("blue","darkolivegreen1","yellow",'orange',"red","purple","black","grey","darkseagreen1","darkgreen"),
       lty=1,
       lwd=2

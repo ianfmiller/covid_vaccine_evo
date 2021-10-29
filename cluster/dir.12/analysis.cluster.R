@@ -21,15 +21,15 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
   {
     states<-start.states
     
-    parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,iso=iso)
+    parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,q=q)
     out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71),method = "lsoda")
     get.matricies(out0)
     Re.alpha.delta.start<-getR0(Fmat,Vmat)
     
-    parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,iso=iso)
+    parameters1<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha1,p=p,omega=omega,omegav=omegav,q=q)
     out1 <- ode(states, times=times, func = "derivs", parms = parameters1,dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71),method = "lsoda")
     if(plot.sim) {plot.simulation(out1)}
-    epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","R_C","R_C_V","C","C_V")]
+    epi.equi.states<-out1[nrow(out1),c("S","V","I_0","I_V","I_C","I_C_V","Q","Q_V","C","C_V")]
     
     out2 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71),method = "lsoda")
     get.matricies(out2)
@@ -37,7 +37,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
     
     for (alpha2 in A)
     {          
-      parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,iso=iso)
+      parameters2<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=alpha2,p=p,omega=omega,omegav=omegav,q=q)
       out3 <- ode(epi.equi.states, times=c(0,0), func = "derivs", parms = parameters2,dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
       get.matricies(out3)
       RE.invader<-getR0(Fmat,Vmat)
@@ -70,7 +70,7 @@ res<-11
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
 gamma<-1/7
-iso=1/10
+q=1/10
 epsilon<-.5
 p<-50
 
