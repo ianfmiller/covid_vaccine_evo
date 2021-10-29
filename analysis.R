@@ -65,7 +65,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 
 times<-seq(0,365*1,1)
 
-A<-c(seq(.0025,.05,.00025),seq(.055,.4,.005))
+A<-c(seq(.0025,.2,.0005))
 res<-11
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
