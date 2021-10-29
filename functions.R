@@ -3,8 +3,8 @@ library(viridis)
 #calculates F and V matricies (used in next-gen R0 calculation) from output of SIR model
 get.matricies<-function(output)
 {
-  Fmat<<-matrix(output[1,10:25],4,4,byrow = T)
-  Vmat<<-matrix(output[1,26:41],4,4,byrow = T)
+  Fmat<<-matrix(output[1,12:47],6,6,byrow = T)
+  Vmat<<-matrix(output[1,48:83],6,6,byrow = T)
 }
 
 #calculates R0 from F and V matricies
@@ -30,6 +30,8 @@ get.states<-function(p.C, p.V, p.I)
   I_V_0=p.I*(V_0/(C_V_0+C_0+V_0+S_0)) ## infected--vaccinated
   I_C_0=p.I*(C_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
   I_C_V_0=p.I*(C_V_0/(C_V_0+C_0+V_0+S_0)) ## infected--convalescent
+  R_C_0=0
+  R_C_V_0=0
 
   
   states<<-c(S=S_0,
@@ -38,6 +40,8 @@ get.states<-function(p.C, p.V, p.I)
             I_V=I_V_0,
             I_C=I_C_0,
             I_C_V=I_C_V_0,
+            R_C=R_C_0,
+            R_C_V=R_C_V_0,
             C=C_0,
             C_V=C_V_0)
 }
@@ -45,9 +49,9 @@ get.states<-function(p.C, p.V, p.I)
 # get R0 given vr, b1, b2
 find.R0<-function(alpha,b1,b2)
 {
-  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
+  parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
   new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                 dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+                 dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
   get.matricies(new.out)
   R0.calc<-getR0(Fmat,Vmat)
   R0.calc
@@ -76,9 +80,9 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc)
   R0s<-c()
   for(alpha in vsteps)
   {
-    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav)
+    parameters <- c(b1=b1,b2=b2,gamma=gamma,rU=rUv,rL=rLv,rUc=rUc,rLc=rLc,rUcv=rUcv,rLcv=rLcv,epsilon=epsilon,alpha=alpha,p=p,omega=omega,omegav=omegav,iso=iso)
     new.out <- ode(states, c(0,0), func = "derivs", parms = parameters,
-                   dllname = "epi.model", initfunc = "initmod",nout=32,outnames=paste0("out",0:31))
+                   dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71))
     get.matricies(new.out)
     R0.calc<-getR0(Fmat,Vmat)
     R0s<-c(R0s,R0.calc)
@@ -143,6 +147,8 @@ plot.simulation<-function(output,legend=T)
   I_V.plot<-output[,"I_V"]
   I_C.plot<-output[,"I_C"]
   I_C_V.plot<-output[,"I_C_V"]
+  R_C.plot<-output[,"R_C"]
+  R_C_V.plot<-output[,"R_C_V"]
   C.plot<-output[,"C"]
   C_V.plot<-output[,"C_V"]
   plot.x<-1:nrow(output)
@@ -153,6 +159,8 @@ plot.simulation<-function(output,legend=T)
   points(plot.x,I_V.plot,type="l",col="orange",lwd=2)
   points(plot.x,I_C.plot,type="l",col="red",lwd=2)
   points(plot.x,I_C_V.plot,type="l",col="purple",lwd=2)
+  points(plot.x,R_C.plot,type="l",col="black",lwd=2,lty=1)
+  points(plot.x,R_C_V.plot,type="l",col="grey",lwd=2,lty=1)
   points(plot.x,C.plot,type="l",col="darkseagreen1",lwd=2)
   points(plot.x,C_V.plot,type="l",col="darkgreen",lwd=2)
   
@@ -160,8 +168,8 @@ plot.simulation<-function(output,legend=T)
   {
     legend(
       "topright",
-      legend=c("S","V","I_0","I_V","I_C","I_C_V","C","C_V"),
-      col=c("blue","darkolivegreen1","yellow",'orange',"red","purple","darkseagreen1","darkgreen"),
+      legend=c("S","V","I_0","I_V","I_C","I_C_V","R_C","R_C_V","C","C_V"),
+      col=c("blue","darkolivegreen1","yellow",'orange',"red","purple","black","grey","darkseagreen1","darkgreen"),
       lty=1,
       lwd=2
     )
