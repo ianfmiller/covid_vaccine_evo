@@ -90,20 +90,6 @@ find.optim.vir<-function(vsteps,b1,b2,rU,rL,rUc,rLc)
   list(vsteps[which.max(R0s)],R0s)
 }
 
-# plotting function for visualizing results matrix
-plot.result<-function(plot.mat,cols,col.vals)
-{
-  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
-  xx<-seq(0,1,length.out = res)
-  yy<-seq(0,1,length.out = res)
-  for(i in 1:res)
-  {
-    for(j in 1:res)
-    {
-      rect(xx[i]-(1/(res-1))/2,yy[j]-(1/(res-1))/2,xx[i]+(1/(res-1))/2,yy[j]+(1/(res-1))/2,col = cols[which.min(abs(plot.mat[i,j]-col.vals))],border=NA)
-    }
-  }
-}
 
 outcome.col.func<-function(R0.obs,R0.mutant)
 {
