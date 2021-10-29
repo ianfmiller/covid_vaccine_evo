@@ -212,125 +212,130 @@ pip.analysis<-function(mat)
 {
   output<-rep(NA,length.out=13)
   if(colnames(mat)[1]=="X") {mat<-mat[,-1]}
-  mod.mat<-matrix(NA,dim(mat)[1],dim(mat)[2])
-  colnames(mod.mat)<-colnames(mat)
-  rownames(mod.mat)<-rownames(mat)
-  for(j in 1:dim(mod.mat)[1]) {
-    for(k in 1:dim(mod.mat)[1]) {
-      mod.mat[j,k] <- 1*(mat[j,k]>1)
-    }}
   
-  row.max<-find.peak(rowSums(mod.mat))
-  row.min<-find.peak(-1*rowSums(mod.mat))
-  
-  col.max<-find.peak(colSums(mod.mat))
-  col.min<-find.peak(-1*colSums(mod.mat))
-  
-  if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-A[col.max]}}
-  if (is.numeric(col.min)&&is.numeric(row.max)) {if(col.min-row.max<=1) {output[3]<-"REPELLER"; output[4]<-A[row.max]}}
-  
-  if(isTRUE(as.numeric(output[2])>0)) #used to check for repeller point and get eradication bounds
+  if(any(mat>=1))
   {
-    up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
-    up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
-    up.sub.mat.col.sums<-colSums(up.sub.mat)
+    mod.mat<-matrix(NA,dim(mat)[1],dim(mat)[2])
+    colnames(mod.mat)<-colnames(mat)
+    rownames(mod.mat)<-rownames(mat)
+    for(j in 1:dim(mod.mat)[1]) {
+      for(k in 1:dim(mod.mat)[1]) {
+        mod.mat[j,k] <- 1*(mat[j,k]>1)
+      }}
     
-    if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
+    row.max<-find.peak(rowSums(mod.mat))
+    row.min<-find.peak(-1*rowSums(mod.mat))
+    
+    col.max<-find.peak(colSums(mod.mat))
+    col.min<-find.peak(-1*colSums(mod.mat))
+    
+    if (is.numeric(col.max)&&is.numeric(row.min)) {if(col.max-row.min<=1) {output[1]<-"ESS"; output[2]<-A[col.max]}}
+    if (is.numeric(col.min)&&is.numeric(row.max)) {if(col.min-row.max<=1) {output[3]<-"REPELLER"; output[4]<-A[row.max]}}
+    
+    if(isTRUE(as.numeric(output[2])>0)) #used to check for repeller point and get eradication bounds
     {
-      upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
-      lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
-      if(upper.bound<dim(mat)[1] && is.na(output[3]))
+      up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
+      up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
+      up.sub.mat.col.sums<-colSums(up.sub.mat)
+      
+      if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
       {
-        output[3]<-"REPELLER2"
-        output[4]<-A[upper.bound+1]
-        output[10]<-"mid.erad.lower"
-        output[11]<-A[lower.bound]
-        output[12]<-"mid.erad.upper"
-        output[13]<-A[upper.bound]
+        upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+        lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+        if(upper.bound<dim(mat)[1] && is.na(output[3]))
+        {
+          output[3]<-"REPELLER2"
+          output[4]<-A[upper.bound+1]
+          output[10]<-"mid.erad.lower"
+          output[11]<-A[lower.bound]
+          output[12]<-"mid.erad.upper"
+          output[13]<-A[upper.bound]
+          
+        }
         
+        if(upper.bound==dim(mat)[1])
+        {
+          output[6]<-"upper.erad"
+          output[7]<-A[lower.bound]
+        }
       }
       
-      if(upper.bound==dim(mat)[1])
+      low.sub.mat.cols<-which(A<output[2])
+      low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
+      low.sub.mat.col.sums<-colSums(low.sub.mat)
+      
+      if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
       {
-        output[6]<-"upper.erad"
-        output[7]<-A[lower.bound]
+        upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+        lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+        
+        if(lower.bound==1)
+        {
+          output[8]<-"lower.erad"
+          output[9]<-A[upper.bound]
+        }
       }
     }
     
-    low.sub.mat.cols<-which(A<output[2])
-    low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
-    low.sub.mat.col.sums<-colSums(low.sub.mat)
     
-    if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
+    if (isFALSE(any(diff(colSums(mod.mat))<0)) && any(mod.mat>0)) 
     {
-      upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
-      lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
-      
-      if(lower.bound==1)
+      output[5]<-"selection for hypervirulence"
+      if(length(which(colSums(mod.mat)==min(colSums(mod.mat))))>2)
       {
         output[8]<-"lower.erad"
-        output[9]<-A[upper.bound]
+        output[9]<-A[max(which(colSums(mod.mat)==min(colSums(mod.mat))))]
       }
     }
-  }
-  
-  
-  if (isFALSE(any(diff(colSums(mod.mat))<0)) && any(mod.mat>0)) 
-  {
-    output[5]<-"selection for hypervirulence"
-    if(length(which(colSums(mod.mat)==min(colSums(mod.mat))))>2)
+    
+    
+    if (isFALSE(any(diff(colSums(mod.mat))>0)) && any(mod.mat>0)) {output[5]<-"selection for 0 virulence"}
+    
+    if (!any(is.na(output)==F)) #this loop is for when theres a region around the ESS where nothing can invade. This is due to numerical errors
     {
-      output[8]<-"lower.erad"
-      output[9]<-A[max(which(colSums(mod.mat)==min(colSums(mod.mat))))]
-    }
-  }
-  
-  
-  if (isFALSE(any(diff(colSums(mod.mat))>0)) && any(mod.mat>0)) {output[5]<-"selection for 0 virulence"}
-  
-  if (!any(is.na(output)==F)) #this loop is for when theres a region around the ESS where nothing can invade. This is due to numerical errors
-  {
-    intersect(which(colSums(mod.mat)==max(colSums(mod.mat))),which(rowSums(mod.mat)==min(rowSums(mod.mat))))->overlap
-    if (length(overlap)>0)
-    {
-      output[1]<-"ESS"
-      output[2]<-mean(A[overlap])
-      { #get erad bounds
-        up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
-        up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
-        up.sub.mat.col.sums<-colSums(up.sub.mat)
-        
-        if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
-        {
-          upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
-          lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
-          if(upper.bound==dim(mat)[1])
-          {
-            output[6]<-"upper.erad"
-            output[7]<-A[lower.bound]
-          }
-        }
-        
-        low.sub.mat.cols<-which(A<output[2])
-        low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
-        low.sub.mat.col.sums<-colSums(low.sub.mat)
-        
-        if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
-        {
-          upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
-          lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+      intersect(which(colSums(mod.mat)==max(colSums(mod.mat))),which(rowSums(mod.mat)==min(rowSums(mod.mat))))->overlap
+      if (length(overlap)>0)
+      {
+        output[1]<-"ESS"
+        output[2]<-mean(A[overlap])
+        { #get erad bounds
+          up.sub.mat.cols<-which(A>max(as.numeric(output[2],output[4])))
+          up.sub.mat<-mod.mat[up.sub.mat.cols,up.sub.mat.cols]
+          up.sub.mat.col.sums<-colSums(up.sub.mat)
           
-          if(lower.bound==1)
+          if (length(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))>=2)
           {
-            output[8]<-"lower.erad"
-            output[9]<-A[upper.bound]
+            upper.bound<-max(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+            lower.bound<-min(which(up.sub.mat.col.sums==min(up.sub.mat.col.sums)))+(dim(mod.mat)[1]-length(up.sub.mat.col.sums))
+            if(upper.bound==dim(mat)[1])
+            {
+              output[6]<-"upper.erad"
+              output[7]<-A[lower.bound]
+            }
+          }
+          
+          low.sub.mat.cols<-which(A<output[2])
+          low.sub.mat<-mod.mat[low.sub.mat.cols,low.sub.mat.cols]
+          low.sub.mat.col.sums<-colSums(low.sub.mat)
+          
+          if (length(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))>=2)
+          {
+            upper.bound<-max(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+            lower.bound<-min(which(low.sub.mat.col.sums==min(low.sub.mat.col.sums)))
+            
+            if(lower.bound==1)
+            {
+              output[8]<-"lower.erad"
+              output[9]<-A[upper.bound]
+            }
           }
         }
       }
     }
-  }
+    
+    if (is.na(output[5]) && is.na(col.max) && is.na(col.min) && is.na(row.max) && is.na(row.min)) {output[5]<-"global eradication"}
+  } else {output[5]<-"global eradication"}
   
-  if (is.na(output[5]) && is.na(col.max) && is.na(col.min) && is.na(row.max) && is.na(row.min)) {output[5]<-"global eradication"}
   
   return(output)
 }

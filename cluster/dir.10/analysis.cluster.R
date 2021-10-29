@@ -66,7 +66,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 
 times<-seq(0,365*400,1)
 A<-seq(.0025,.2,.0005)
-res<-21
+res<-11
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
 gamma<-1/7
