@@ -71,6 +71,7 @@ colors<-c("grey","white",rev(magma(length(A.plot))))
 col.vals<-A.plot
 
 res<-11
+rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
 # plot
 #layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,11),3,7,byrow = T))
