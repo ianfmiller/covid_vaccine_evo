@@ -199,7 +199,7 @@ pip.analysis<-function(mat)
   output<-rep(NA,length.out=13)
   if(colnames(mat)[1]=="X") {mat<-mat[,-1]}
   
-  if(any(diag(mat)>=1))
+  if(any(mat>=1))
   {
     mod.mat<-matrix(NA,dim(mat)[1],dim(mat)[2])
     colnames(mod.mat)<-colnames(mat)
