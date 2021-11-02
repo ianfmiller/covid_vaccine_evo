@@ -181,4 +181,5 @@ mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 mtext("Global eradication",cex=1.5,line=1)
 legend("topright",legend=c("resident strain wins","invader strain wins"),pch=15,col=c("grey","black"),cex=2)
 
+#save to image with dimensions 1289x492
 
