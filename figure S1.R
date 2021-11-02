@@ -134,5 +134,5 @@ mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
 legend("right",legend=c(expression(alpha[optim]*' = 0.5 * ('*alpha[italic('alpha')]*" + "*alpha[italic("delta")]*")"),expression(alpha[optim]*' = '*alpha[italic("delta")]),expression(alpha[optim]*' = 2*'*alpha[italic("delta")])),col=viridis(3),lwd=12,cex=1.5)
 
-# copy with dimensions 1159 x 621
+# copy with dimensions 1285 x 740
 
