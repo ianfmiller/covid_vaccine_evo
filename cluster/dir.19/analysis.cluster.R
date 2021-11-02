@@ -99,7 +99,7 @@ b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 
 start.states<-get.states(.375,.5,.001) # set startinng conditions
 rUc<-.75 #convalescent class
-rLc<-.9 #convalescent class
+rLc<-.75 #convalescent class
 
 ### do analysis
 
