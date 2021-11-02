@@ -4,7 +4,10 @@ source("~/Documents/GitHub/covid_vaccines_virulence_evolution/functions.R")
 ## plotting function for visualizing results matrix
 sub.plot.func<-function(matrix,cols,col.vals)
 {
-  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2)
+  plot(0,0,type="n",xlim=c(-(1/(res-1))/2,1+(1/(res-1))/2),ylim=c(-(1/(res-1))/2,1+(1/(res-1))/2),xlab=expression('r'[U]),ylab=expression('r'[L]),cex.lab=2,axes=F)
+  axis(1,at=seq(0,1,.2),labels = seq(.5,1,.1))
+  axis(2,at=seq(0,1,.2),labels = seq(.5,1,.1))
+  box()
   xx<-seq(0,1,length.out = res)
   yy<-seq(0,1,length.out = res)
   for(i in 1:res)
