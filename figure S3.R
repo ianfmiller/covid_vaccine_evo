@@ -57,8 +57,7 @@ plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky
   
   if(nrow(poly.cords)>0)
   {
-    if(flip==F) {poly.cords<-poly.cords[order(poly.cords$y,poly.cords$x),]}
-    if(flip==T) {poly.cords<-poly.cords[order(-poly.cords$y,poly.cords$x),]}
+    poly.cords<-poly.cords[order(poly.cords$y,poly.cords$x),]
     upper<-poly.cords[1:(nrow(poly.cords)/2),]
     lower<-poly.cords[(1+nrow(poly.cords)/2):nrow(poly.cords),]
     lower<-lower[nrow(lower):1,]
