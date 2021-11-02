@@ -172,14 +172,14 @@ for(alpha1 in A)
 RE.invader.mat<-matrix(RE.invader.vec,length(A),length(A),byrow = T)
 colnames(RE.invader.mat)<-A
 rownames(RE.invader.mat)<-A
-image(RE.invader.mat>=1,axes=F,col=c("grey","black"))
+image(RE.invader.mat>=1,axes=F,col=c("slategray1"))
 axis(1,at=c(0,1),labels=A[c(1,200)])
 axis(2,at=c(0,1),labels=A[c(1,200)])
 mtext(expression(alpha[resident]),side=1,cex=2,line=2)
 mtext(expression(alpha[invader]),side=2,cex=2,line=2)
 mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 mtext("Global eradication",cex=1.5,line=1)
-legend("topright",legend=c("resident strain wins","invader strain wins"),pch=15,col=c("grey","black"),cex=2)
+legend("topright",legend=c("resident strain wins","invader strain wins","neither strategy viable"),pch=15,col=c("grey","black",'slategray1'),cex=2)
 
-#save to image with dimensions 1289x492
+#save to image with dimensions 1289x550
 
