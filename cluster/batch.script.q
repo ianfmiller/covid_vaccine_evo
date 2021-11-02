@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=20
 #SBATCH -t 0-01:30:00
 #SBATCH -J "covid.vacc"
-#SBATCH --array=13-36
+#SBATCH --array=13-30
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ifmiller@princeton.edu
 
