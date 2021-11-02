@@ -73,9 +73,6 @@ gamma<-1/7
 q=1/10
 epsilon<-.5
 p<-50
-
-# 10 year waning
-
 omega<-0
 omegav<-0
 
