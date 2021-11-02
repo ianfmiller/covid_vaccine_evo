@@ -19,7 +19,7 @@ sub.plot.func<-function(matrix,cols,col.vals)
   }
 }
 
-plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky=F)
+plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky1=F,hacky2=F)
 {
   alpha.ess.mat.data<-as.numeric(unlist(plot.data.$alpha.ess))
   alpha.ess.mat.data[which(plot.data.$pip.motif=="selection for hypervirulence")]<-(-2)
@@ -44,7 +44,8 @@ plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky
     if(outcome==3) {sub.mat<-rbind(sub.mat,data.frame(x=xx[xindex],y=yy[yindex]))}
   }
   sub.mat<-round(sub.mat,4)
-  if(hacky) {sub.mat<-sub.mat[-1,]}
+  if(hacky1) {sub.mat<-sub.mat[-3,]}
+  if(hacky2) {sub.mat<-sub.mat[-c(1:7),]}
   poly.cords<-data.frame(x=c(),y=c())
   for(i in unique(sub.mat$x))
   {
@@ -62,8 +63,9 @@ plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky
     lower<-poly.cords[(1+nrow(poly.cords)/2):nrow(poly.cords),]
     lower<-lower[nrow(lower):1,]
     poly.cords.sorted<-rbind(upper,lower)
-    if(hacky) {poly.cords.sorted<-rbind(poly.cords.sorted,data.frame(x=c(.65,.65,.75),y=c(1.05,.95,.95)))}
     polygon(poly.cords.sorted$x,poly.cords.sorted$y,lwd=1,density = 10)
+    if(hacky1) {polygon(c(.85,.95,.95,.85),c(.95,.95,1.05,1.05),density=10)}
+    if(hacky2) {polygon(c(.65,.75,.75,.65),c(-.05,-.05,.65,.65),density=10)}
   }
 }
 
@@ -99,7 +101,7 @@ mtext("75% vaccinated",line=2,cex=1.25)
 
 ## 90% vaccinated
 plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.9alpha.optim0.00875.RDS")
-plot.func(plot.data,optim.vir = .00875)
+plot.func(plot.data,optim.vir = .00875,hacky1 = T)
 
 mtext("90% vaccinated",line=2,cex=1.25)
 
@@ -129,7 +131,7 @@ plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.da
 plot.func(plot.data,optim.vir = .02)
 ## 90% vaccinated
 plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.9alpha.optim0.02.RDS")
-plot.func(plot.data,optim.vir = .02,hacky=T)
+plot.func(plot.data,optim.vir = .02,hacky2 = T)
 
 
 mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
