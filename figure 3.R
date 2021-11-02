@@ -152,6 +152,5 @@ text(.5,.6,"evolution proof\nherd immunity",pos=3,cex=1.25)
 rect(0,.8,1,1,col="grey")
 text(.5,1,"unbounded\nselection for\nincreased virulence",pos=3,cex=1.25)
 par(xpd=F)
-## copy to clipboard with width of 1920, height of 1531
-## or save as pdf with dimensions 15 in by 11.97in
+## copy to clipboard with width of 1285, height of 868
 

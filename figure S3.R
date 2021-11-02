@@ -86,20 +86,20 @@ par(mar=c(2,2,2,2),oma=c(4,8,4,0))
 ## alpha optim = 0.00875 (intermediate between alpha and delta strain virulence)
 
 ## 50% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.5alpha.optim0.00875.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.5alpha.optim0.00875.RDS")
 plot.func(plot.data,optim.vir = .00875)
 
 mtext("50% vaccinated",line=2,cex=1.25)
 mtext(expression(alpha['optim']*' = '*(alpha[italic("delta")]+alpha[italic("alpha")])/2),side=2,line=7,cex=1.25)
 
 ## 75% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.00875.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.75alpha.optim0.00875.RDS")
 plot.func(plot.data,optim.vir = .00875)
 
 mtext("75% vaccinated",line=2,cex=1.25)
 
 ## 90% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.9alpha.optim0.00875.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.9alpha.optim0.00875.RDS")
 plot.func(plot.data,optim.vir = .00875)
 
 mtext("90% vaccinated",line=2,cex=1.25)
@@ -107,29 +107,29 @@ mtext("90% vaccinated",line=2,cex=1.25)
 ## alpha optim = 0.01 (delta strain virulence)
 
 ## 50% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.5alpha.optim0.01.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.5alpha.optim0.01.RDS")
 plot.func(plot.data,optim.vir = .01)
 
 mtext(expression(alpha['optim']*' = '*alpha[italic("delta")]),side=2,line=7,cex=1.25)
 
 ## 75% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.01.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.75alpha.optim0.01.RDS")
 plot.func(plot.data,optim.vir = .01)
 ## 90% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.9alpha.optim0.01.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.9alpha.optim0.01.RDS")
 plot.func(plot.data,optim.vir = .01)
 
 ## alpha optim = 0.02 (twice as virulent as delta)
 
 ## 50% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.5alpha.optim0.02.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.5alpha.optim0.02.RDS")
 plot.func(plot.data,optim.vir = .02)
 mtext(expression(alpha['optim']*' = 2*'*alpha[italic("delta")]),side=2,line=7,cex=1.25)
 ## 75% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.02.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.75alpha.optim0.02.RDS")
 plot.func(plot.data,optim.vir = .02)
 ## 90% vaccinated
-plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.9alpha.optim0.02.RDS")
+plot.data<-readRDS("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/small.epsilon.omega0p.vacc0.9alpha.optim0.02.RDS")
 plot.func(plot.data,optim.vir = .02,hacky=T)
 
 
