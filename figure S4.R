@@ -19,7 +19,7 @@ sub.plot.func<-function(matrix,cols,col.vals)
   }
 }
 
-plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,hacky=F)
+plot.func<-function(plot.data.,colors.=colors,col.vals.=col.vals,optim.vir,flip=F)
 {
   alpha.ess.mat.data<-as.numeric(unlist(plot.data.$alpha.ess))
   alpha.ess.mat.data[which(plot.data.$pip.motif=="selection for hypervirulence")]<-(-2)
