@@ -123,7 +123,7 @@ points(A,death.rates3,col=viridis(3)[3],type="l",lwd=4,lty=2)
 mtext("B",side=3,line=1,font=2,adj=0,padj = 0)
 
 #par(fig = c(2/3,3/3, 0, 1), new = T)
-plot(A,R0s1,xlim=c(.0025,.021),ylim=c(0,6),xlab="virulence",ylab="fitness",type="n",cex.lab=2,cex.axis=1.2)
+plot(A,R0s1,xlim=c(.0025,.021),ylim=c(0,6),xlab="virulence",ylab=expression("fitness ("*R[0]*")"),type="n",cex.lab=2,cex.axis=1.2)
 abline(v=.00875,col=viridis(3,alpha=.5)[1],lwd=4,lty=2)
 abline(v=.01,col=viridis(3,alpha=.5)[2],lwd=4,lty=2)
 abline(v=.02,col=viridis(3,alpha=.5)[3],lwd=4,lty=2)
@@ -132,7 +132,7 @@ points(A,R0s2,col=viridis(3)[2],type="l",lwd=12)
 points(A,R0s3,col=viridis(3)[3],type="l",lwd=12)
 mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
-legend("right",legend=c(expression(alpha[optim]*' = 1.25*'*alpha[ansc]),expression(alpha[optim]*' = '*alpha[B.1.1.7]),expression(alpha[optim]*' = 2*'*alpha[B.1.1.7])),col=viridis(3),lwd=12,cex=1.5)
+legend("right",legend=c(expression(alpha[optim]*' = 0.5 * ('*alpha[italic('alpha')]*" + "*alpha[italic("delta")]*")"),expression(alpha[optim]*' = '*alpha[italic("delta")]),expression(alpha[optim]*' = 2*'*alpha[italic("delta")])),col=viridis(3),lwd=12,cex=1.5)
 
 # copy with dimensions 1159 x 621
 
