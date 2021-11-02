@@ -20,7 +20,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
   for(alpha1 in A)
   {
     states<-start.states
-   
+    
     parameters0<-c(b1=b1,b2=b2,gamma=gamma,rUv=rUv,rLv=rLv,rUc=rUc,rLc=rLc,rUcv=mean(rUv,1),rLcv=mean(rLv,1),epsilon=epsilon,alpha=0.01,p=p,omega=omega,omegav=omegav,q=q)
     out0 <- ode(states, times=c(0,0), func = "derivs", parms = parameters0,dllname = "epi.model", initfunc = "initmod",nout=72,outnames=paste0("out",0:71),method = "lsoda")
     get.matricies(out0)
@@ -79,11 +79,11 @@ p<-50
 omega<-0
 omegav<-0
 
-## alpha optim = 0.00875
+## alpha optim = 0.01
 
 ### set b1, b2
 
-optim.alpha.assumed<-.00875 #set to either .00875, .01, .02
+optim.alpha.assumed<-.01 #set to either .00875, .01, .02
 alpha.obs<-.01
 R0.assumed<-5.625
 
@@ -106,13 +106,13 @@ rLc<-.5 #convalescent class
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.00875.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.01.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dopar% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.00875.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.75alpha.optim0.01.RDS")
 }
 
 

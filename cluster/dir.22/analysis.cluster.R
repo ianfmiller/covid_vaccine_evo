@@ -66,6 +66,7 @@ do.ess.sim<-function(rUv,rLv,plot.sim=F)
 
 times<-seq(0,365*1,1)
 A<-seq(.0025,.2,.0005)
+
 res<-11
 rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
 
@@ -79,11 +80,11 @@ p<-50
 omega<-0
 omegav<-0
 
-## alpha optim = 0.02
+## alpha optim = 0.00875
 
 ### set b1, b2
 
-optim.alpha.assumed<-.02 #set to either .00875, .01, .02
+optim.alpha.assumed<-.00875 #set to either .00875, .01, .02
 alpha.obs<-.01
 R0.assumed<-5.625
 
@@ -98,21 +99,21 @@ get.states(0,0,0)
 b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
 b1<-uniroot(R0.search,c(0,200),alpha=alpha.obs,b2=b2,tol=1e-10)$root
 
-### 75% vaccinated
+### 50% vaccinated
 
-start.states<-get.states(.375,.75,.001) # set startinng conditions
-rUc<-.75 #convalescent class
-rLc<-.9 #convalescent class
+start.states<-get.states(.375,.5,.001) # set startinng conditions
+rUc<-.25 #convalescent class
+rLc<-.5 #convalescent class
 
 ### do analysis
 
-if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/strong.natural.omega0p.vacc0.75alpha.optim0.02.RDS"))
+if(!file.exists("~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.5alpha.optim0.00875.RDS"))
 {
   n.cores<-detectCores()
   registerDoParallel(n.cores)
   sim.params<-data.frame("rUv"=rep(rUv.steps,each=res),"rLv"=rep(rLv.steps,times=res))
   out.data<-foreach(k = 1:nrow(sim.params), .multicombine = T, .combine = rbind, .verbose = T) %dopar% do.ess.sim(sim.params[k,"rUv"],sim.params[k,"rLv"])
-  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/strong.natural.omega0p.vacc0.75alpha.optim0.02.RDS")
+  saveRDS(out.data,file="~/Documents/GitHub/covid_vaccines_virulence_evolution/sim.data/weak.natural.omega0p.vacc0.5alpha.optim0.00875.RDS")
 }
 
 
