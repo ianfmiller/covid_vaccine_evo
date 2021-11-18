@@ -1,495 +1,138 @@
-#### set up
-source("covid_SVIC_functions.R")
+# set up
+
+## load packages and model
+source("~/Documents/GitHub/covid_vaccines_virulence_evolution/functions.R")
 
 library(deSolve)
 library(rootSolve)
-library(plotrix)
+library(viridis)
 
-system("R CMD SHLIB SVIC.c")
-dyn.load(paste("SVIC", .Platform$dynlib.ext, sep = ""))
+system("R CMD SHLIB epi.model.c")
+dyn.load(paste("~/Documents/GitHub/covid_vaccines_virulence_evolution/epi.model", .Platform$dynlib.ext, sep = ""))
 
-#### define model parameters
+## define model parameters
 
-gamma<-1
-
-optim.vir.assumed<-.0075 #set to either .01, .005, .0025
-
-vir.obs<-.0075
-
-prop<-66.666
-
-R0.assumed<-3.75
+gamma<-1/7
 
 rU<-.0 #vaccinated class
 rL<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
 
-frac_lower<-.5 # % contribution of lower respiratory infection to overall transmission
+A<-c(seq(.0025,.2,.0005))
+res<-11
+rUv.steps<-rLv.steps<-seq(.5,1,length.out = res)
+
+omega<-0
+omegav<-0
+
+gamma<-1/7
+q=1/10
+epsilon<-.5
+p<-50
 
 
-### set trade-off (b1 + b2) according to assumed ES virulence, observed virulence, and R0 at observed virulence
+# generate plot data 
 
-## set trade-off shape (b2 only) according to assumed ES virulence
+## scenario 1
 
-get.states(0,0,0)
+optim.alpha.assumed<-.00875 #set to either .00875, .01, .02
+alpha.obs<-.01
+R0.assumed<-5.625
 
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-
-## set trade-off scaling (b1) so that R0=2.5 at vir.obs
-
-b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
-
-## checks for setting b1 and b2
-
-#check to ensure that fit b2 is effectively independent of b1
-#uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=2,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-#uniroot(b2.search,c(0,1),b1=3,optim.vir.assumed=optim.vir.assumed,tol=1e-10)$root
-
-#check to ensure that b1 and b2 give desired R0 at vir.obs
-#find.R0(vir.obs,b1,b2)
-
-#check that optim.vir.assumed is in fact optimal given b1 and b2, and that b1 and b2 and give desired R0 at vir.obs
-
-#vs<-seq(0,.02,.00001)
-#rs<-unlist(lapply(vs,find.R0,b1=b1,b2=b2))
-#plot(vs,rs,ylim=c(3.74,3.76),xlab=expression(alpha),ylab=expression(R[0]))
-#abline(v=optim.vir.assumed)
-#abline(h=max(rs))
-#abline(v=vir.obs)
-#abline(h=R0.assumed)
-
-
-#### calculate selection coefficient for combinations of rL and rU
-
-### plotting tools
-
-col.trans<-.6
-
-s.blues1<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds1<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
-s.colors1<-c(s.blues1,"white",s.reds1)
-s.col.vals1<-seq(-1.1,1.1,length.out = 401)
-
-s.blues2<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds2<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
-s.colors2<-c(s.blues2,"white",s.reds2)
-s.col.vals2<-seq(-1.1,1.1,length.out = 401)
-
-s.blues3<-hsv(.666,1,1,seq(1,.001,length.out = 200)^col.trans)
-s.reds3<-hsv(1,1,1,seq(.001,1,length.out = 200)^col.trans)
-s.colors3<-c(s.blues3,"white",s.reds3)
-s.col.vals3<-seq(-1.1,1.1,length.out = 401)
-
-s.colors<-list(s.colors1,s.colors2,s.colors3)
-s.col.vals<-list(s.col.vals1,s.col.vals2,s.col.vals3)
-
-res<-101
-
-### set plot window
-
-layout(matrix(c(1,1,2,2,3,3,10,4,4,5,5,6,6,10,7,7,8,8,9,9,10),3,7,byrow = T))
-par(mar=c(2,2,2,2),oma=c(4,8,4,0))
-
-#### analysis
-
-rUc.fix<-.5 #convalescent class
-rLc.fix<-.75 #convalescent class
-
-### optim vir = 2 * obs vir
-
-optim.vir.assumed<-.0075*2 #set to either .005, .01, .0025
-color.index<-1 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
-
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
+rUv<-0 #vaccinated class
+rLv<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
+rUcv<-0 #vaccinated + convalescent class
+rLcv<-0 #vaccinated + convalescent class
 
 get.states(0,0,0)
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
+b1<-uniroot(R0.search,c(0,200),alpha=optim.alpha.assumed,b2=b2,tol=1e-10)$root
 
-rUc<-rUc.fix
-rLc<-rLc.fix
+trans.rates1<-b1*(A-.0025)^b2
+death.rates1<-1/(A*p+gamma)
+out<-find.optim.vir(A,b1,b2,rU,rL,0,0)
+R0s1<-out[[2]]
 
-# 10% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
-  #mtext(expression('r'[L]),side = 2,line=2.5)
-  mtext("10% vaccinated",line=2,cex=1.25)
-  mtext(expression(alpha['optim']*' = 2*'*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
-}
+## scenario 2
 
-# 20% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.5)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-  mtext("50% vaccinated",line=2,cex=1.25)
-  #mtext(expression('selection for '*alpha*' = 0.01'),side=3,line=4,font=2,cex=1.2)
-}
+optim.alpha.assumed<-.01 #set to either .00875, .01, .02
+alpha.obs<-.01
+R0.assumed<-5.625
 
-# 90% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.9)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-  mtext("90% vaccinated",line=2,cex=1.25)
-}
-
-### optim vir = 1.5 * obs vir
-par(mar=c(2,2,2,2))
-optim.vir.assumed<-.0075 #set to either .005, .01, .0025
-color.index<-2 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
-
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
+rUv<-0 #vaccinated class
+rLv<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
+rUcv<-0 #vaccinated + convalescent class
+rLcv<-0 #vaccinated + convalescent class
 
 get.states(0,0,0)
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
+b1<-uniroot(R0.search,c(0,200),alpha=optim.alpha.assumed,b2=b2,tol=1e-10)$root
 
-rUc<-rUc.fix
-rLc<-rLc.fix
+trans.rates2<-b1*(A-.0025)^b2
+death.rates2<-1/(A*p+gamma)
+out<-find.optim.vir(A,b1,b2,rU,rL,0,0)
+R0s2<-out[[2]]
 
-# 10% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
-  mtext(expression(alpha['optim']*' = '*alpha[B.1.1.7]),side=2,line=7,cex=1.25)
-}
+## scenario 3
 
-# 50% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.5)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
-}
+optim.alpha.assumed<-.02 #set to either .00875, .01, .02
+alpha.obs<-.01
+R0.assumed<-5.625
 
-# 90% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.9)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-  contour(s.mat-s.mat[1,1],add=T)
-}
-
-### optim vir = obs vir
-par(mar=c(2,2,2,2))
-optim.vir.assumed<-.00625 #set to either .005, .01, .0025
-color.index<-3 #index to match colors and color values to right analysis. 1 -> optim.vir.assumed=.01, 2 -> optim.vir.assumed=.005, 3 -> optim.vir.assumed=.0025
-
-rU<-.0 #vaccinated class
-rL<-0 #vaccinated class
+rUv<-0 #vaccinated class
+rLv<-0 #vaccinated class
 rUc<-0 #convalescent class
 rLc<-0 #convalescent class
+rUcv<-0 #vaccinated + convalescent class
+rLcv<-0 #vaccinated + convalescent class
 
 get.states(0,0,0)
-b2<-uniroot(b2.search,c(0,1),b1=1,optim.vir.assumed=optim.vir.assumed,tol=1e-15)$root
-b1<-uniroot(R0.search,c(0,100),vr=vir.obs,b2=b2,tol=1e-10)$root
+b2<-uniroot(b2.search,c(0,1),b1=1,optim.alpha.assumed=optim.alpha.assumed,tol=1e-15)$root
+b1<-uniroot(R0.search,c(0,200),alpha=optim.alpha.assumed,b2=b2,tol=1e-10)$root
 
-rUc<-rUc.fix
-rLc<-rLc.fix
+trans.rates3<-b1*(A-.0025)^b2
+death.rates3<-1/(A*p+gamma)
+out<-find.optim.vir(A,b1,b2,rU,rL,0,0)
+R0s3<-out[[2]]
 
-# 10% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.1)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-    mtext(expression(alpha['optim']*' = 1.25*'*alpha[ansc]),side=2,line=7,cex=1.25)
-}
+# plot
 
-# 50% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.5)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-}
+par(mfrow=c(1,3),mar=c(5,5,4,1))
+plot(A,trans.rates1,xlim=c(0.0025,.021),ylim=c(0,6),xlab="virulence",ylab="transmisison rate",type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00875,col=plasma(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.01,col=plasma(3,alpha=.5)[2],lwd=4,lty=2)
+abline(v=.02,col=plasma(3,alpha=.5)[3],lwd=4,lty=2)
+points(A,trans.rates1,col=plasma(3)[1],type="l",lwd=12,lty=1)
+points(A,trans.rates2,col=plasma(3)[2],type="l",lwd=12,lty=1)
+points(A,trans.rates3,col=plasma(3)[3],type="l",lwd=12,lty=1)
+mtext("A",side=3,line=1,font=2,adj=0,padj = 0)
 
-# 90% vacc
-{
-  get.states(p.C=.25,p.I=0,p.vacc=.9)
-  plot.mat.R0.obs<-matrix(NA,res,res) #build matricies to populate
-  plot.mat.R0.mutant<-matrix(NA,res,res) #build matricies to populate
-  R0.obs.vec<-c()
-  R0.mutant.vec<-c()
-  
-  for (rUx in seq(0,1,length.out = res))
-  {
-    for (rLx in seq(0,1,length.out = res))
-    {
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.obs<-getR0(Fmat,Vmat)
-      
-      parameters<-c(b1=b1,b2=b2,gamma=gamma,rU=rUx,rL=rLx,rUc=rUc,rLc=rLc,frac_lower=frac_lower,v=2*vir.obs,prop=prop)
-      out2 <- ode(states, times=c(0,0), func = "derivs", parms = parameters,
-                  dllname = "SVIC", initfunc = "initmod",nout=18,outnames=paste0("out",0:17))
-      get.matricies(out2)
-      R0.mutant<-getR0(Fmat,Vmat)
-      
-      R0.obs.vec<-c(R0.obs.vec,R0.obs)
-      R0.mutant.vec<-c(R0.mutant.vec,R0.mutant)
-    }
-  }
-  
-  plot.mat.R0.obs<-matrix(R0.obs.vec,res,res,byrow = T) #populate matricies
-  plot.mat.R0.mutant<-matrix(R0.mutant.vec,res,res,byrow = T) #populate matricies
-  s.mat<-plot.mat.R0.mutant-plot.mat.R0.obs
-  plot.s(s.mat-s.mat[1,1],s.colors[[color.index]],s.col.vals[[color.index]])
-    contour(s.mat-s.mat[1,1],add=T)
-}
+#par(fig = c(1/3,2/3, 0, 1), new = T)
+plot(A,death.rates1,xlim=c(.0025,.021),ylim=c(0,3),xlab="virulence",ylab="transmisison time",type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00875,col=plasma(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.01,col=plasma(3,alpha=.5)[2],lwd=4,lty=2)
+abline(v=.02,col=plasma(3,alpha=.5)[3],lwd=4,lty=2)
+points(A,death.rates1,col=plasma(3)[1],type="l",lwd=12,lty=1)
+points(A,death.rates2,col=plasma(3)[2],type="l",lwd=6,lty=1)
+points(A,death.rates3,col=plasma(3)[3],type="l",lwd=4,lty=2)
+mtext("B",side=3,line=1,font=2,adj=0,padj = 0)
 
-#legend
-{
-  par(mar=c(2,1,2,5))
-  yy<-seq(0,length(s.col.vals[[color.index]]),1)
-  plot(0,0,type="n",xlim=c(0,1),ylim=c(.5,length(s.col.vals[[color.index]])+.5),xlab="",ylab="",axes=F)
-  color.legend(0,0,1,length(s.col.vals[[color.index]]),legend=NULL,s.colors[[color.index]],gradient="y")
-  axis(4,at=seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1,labels = s.col.vals[[color.index]][seq(0,length(s.col.vals[[color.index]])-1,length.out = 5)+1])
-  mtext("change in selection",side=4,line =2)
-}
+#par(fig = c(2/3,3/3, 0, 1), new = T)
+plot(A,R0s1,xlim=c(.0025,.021),ylim=c(0,6),xlab="virulence",ylab=expression("fitness ("*R[0]*")"),type="n",cex.lab=2,cex.axis=1.2)
+abline(v=.00875,col=plasma(3,alpha=.5)[1],lwd=4,lty=2)
+abline(v=.01,col=plasma(3,alpha=.5)[2],lwd=4,lty=2)
+abline(v=.02,col=plasma(3,alpha=.5)[3],lwd=4,lty=2)
+points(A,R0s1,col=plasma(3)[1],type="l",lwd=12)
+points(A,R0s2,col=plasma(3)[2],type="l",lwd=12)
+points(A,R0s3,col=plasma(3)[3],type="l",lwd=12)
+mtext("C",side=3,line=1,font=2,adj=0,padj = 0)
 
-mtext(expression('lower respiratory tract protection (r'["L,V"]*')'),side = 2,line=1.5,cex=1.5,outer=T)
-mtext(expression('upper respiratory tract protection (r'["U,V"]*')'),side = 1,line=2,cex=1.5,outer=T,adj=3/7)
+legend("right",legend=c(expression(alpha[optim]*' = 0.5 * ('*alpha[italic('alpha')]*" + "*alpha[italic("delta")]*")"),expression(alpha[optim]*' = '*alpha[italic("delta")]),expression(alpha[optim]*' = 2*'*alpha[italic("delta")])),col=plasma(3),lwd=12,cex=1.5)
 
-## copy to clipboard with width of 1051, height of 843
+# copy with dimensions 1285 x 740
+
