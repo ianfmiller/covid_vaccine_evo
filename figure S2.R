@@ -90,7 +90,7 @@ axis(1,at=c(0,1),labels=A[c(1,200)])
 axis(2,at=c(0,1),labels=A[c(1,200)])
 mtext(expression(alpha[resident]),side=1,cex=2,line=2)
 mtext(expression(alpha[invader]),side=2,cex=2,line=2)
-points(.46,.46,pch=1,cex=4,col="red")
+points(.46,.46,pch=1,cex=4,col="red",lwd=4)
 mtext("A",side=3,line=1,font=2,adj=0,padj = 0)
 mtext("ESS",cex=1.5,line=1)
 
